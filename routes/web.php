@@ -5,6 +5,7 @@ use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardlessTransactionController;
+use App\Http\Controllers\BeneficiaryController;
 
 Route::get('/', function () {
     return redirect('/user/login');
@@ -30,7 +31,7 @@ Route::middleware('auth.session')->group(function () {
     })->name('home');
     Route::resource('/user', UsersController::class)->only(['show', 'edit', 'update', 'destroy']);
     Route::resource('/news', NewsController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
-
+    Route::resource('/beneficiaries', BeneficiaryController::class)->only(['index', 'create', 'store']);
 
     Route::get('/cardless/deposit', [CardlessTransactionController::class, 'showDeposit'])->name('cardless.deposit.form');
     Route::post('/cardless/deposit', [CardlessTransactionController::class, 'deposit'])->name('cardless.deposit');
