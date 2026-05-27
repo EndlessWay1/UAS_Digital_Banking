@@ -24,6 +24,18 @@ class TransactionController extends Controller
         return view('transactions.transfer', compact('user'));
     }
 
+    public function depositForm(Request $request)
+    {
+        $user = User::findOrFail($request->session()->get('id'));
+        return view('transactions.deposit', compact('user'));
+    }
+
+    public function withdrawForm(Request $request)
+    {
+        $user = User::findOrFail($request->session()->get('id'));
+        return view('transactions.withdraw', compact('user'));
+    }
+
     public function transfer(Request $request)
     {
         $request->validate([
