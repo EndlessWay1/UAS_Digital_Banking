@@ -4,6 +4,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CardlessTransactionController;
 
 Route::get('/', function () {
     return redirect('/user/login');
@@ -30,3 +31,6 @@ Route::middleware('auth.session')->group(function () {
     Route::resource('/user', UsersController::class)->only(['show', 'edit', 'update', 'destroy']);
     Route::resource('/news', NewsController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
 });
+
+Route::post('/deposit', [CardlessTransactionController::class, 'deposit']);
+Route::post('/deposit', [CardlessTransactionController::class, 'withdraw']);
