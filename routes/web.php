@@ -30,7 +30,13 @@ Route::middleware('auth.session')->group(function () {
     })->name('home');
     Route::resource('/user', UsersController::class)->only(['show', 'edit', 'update', 'destroy']);
     Route::resource('/news', NewsController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
-});
 
-Route::post('/deposit', [CardlessTransactionController::class, 'deposit']);
-Route::post('/deposit', [CardlessTransactionController::class, 'withdraw']);
+
+    Route::get('/cardless/deposit', [CardlessTransactionController::class, 'showDeposit'])->name('cardless.deposit.form');
+    Route::post('/cardless/deposit', [CardlessTransactionController::class, 'deposit'])->name('cardless.deposit');
+ 
+    Route::get('/cardless/withdraw', [CardlessTransactionController::class, 'showWithdraw'])->name('cardless.withdraw.form');
+    Route::post('/cardless/withdraw', [CardlessTransactionController::class, 'withdraw'])->name('cardless.withdraw');
+ 
+    Route::get('/cardless/history', [CardlessTransactionController::class, 'history'])->name('cardless.history');
+});
