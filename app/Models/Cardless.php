@@ -10,7 +10,10 @@ class Cardless extends Model
 {
     use HasFactory;
 
+    protected $table = 'cardless';
+    
     protected $fillable = [
+        'user_id',
         'amount',
         'type',
         'status',
