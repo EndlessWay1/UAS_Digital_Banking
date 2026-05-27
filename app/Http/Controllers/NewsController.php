@@ -35,12 +35,11 @@ class NewsController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string'
         ]);
-
         News::create(
             [
                 'title' => $request->title,
                 'content' => $request->content,
-                'user_id' => $request->session()->get('id'),
+                'author_id' => $request->session()->get('id'),
             ]
         );
 
@@ -52,10 +51,6 @@ class NewsController extends Controller
      */
     public function show(News $news)
     {
-
-        // get author
-        $news = $news->with('author')->get();
-
         return view('news.show', compact('news'));
     }
 
