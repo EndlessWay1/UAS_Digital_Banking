@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Beneficiary</title>
+</head>
+
+<body>
+    <h1>Add Beneficiary</h1>
+    <form action="{{ route('beneficiaries.store') }}" method="POST">\
+        @csrf
+
+        <span>Recipient Name:</span>
+        <input type="text" name="recipient_name" required>
+        <br><br>
+
+        <span>Bank Name:</span>
+        <input type="text" name="bank_name" required>
+        <br><br>
+
+        <span>RAccount Number:</span>
+        <input type="text" name="account_number" required>
+        <br><br>
+
+        <span>Alias:</span>
+        <input type="text" name="alias">
+        <br><br>
+
+        <button type="submit">
+            Save Beneficiary
+        </button>
+    </form>
+
+    @if ($errors->any())
+        <ul>
+            @foreach (errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    @endif
+
+</body>
+</html>
