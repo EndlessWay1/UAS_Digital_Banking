@@ -9,6 +9,9 @@
 
 <body>
     <h1>Log In</h1>
+    <span style="font-size: medium; color:gray"><a href=" {{ route('signup') }}">Sign Up</a></span>
+    <br>
+    <br>
     <form method="post" action="{{ route('storelogin') }}">
         @csrf
 
