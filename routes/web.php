@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardlessTransactionController;
@@ -40,4 +41,13 @@ Route::middleware('auth.session')->group(function () {
     Route::post('/cardless/withdraw', [CardlessTransactionController::class, 'withdraw'])->name('cardless.withdraw');
  
     Route::get('/cardless/history', [CardlessTransactionController::class, 'history'])->name('cardless.history');
+
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/transfer', [TransactionController::class, 'transferForm'])->name('transactions.transfer.form');
+    Route::post('/transactions/transfer', [TransactionController::class, 'transfer'])->name('transactions.transfer');
+    Route::get('/transactions/deposit', [TransactionController::class, 'depositForm'])->name('transactions.deposit.form');
+    Route::post('/transactions/deposit', [TransactionController::class, 'deposit'])->name('transactions.deposit');
+    Route::get('/transactions/withdraw', [TransactionController::class, 'withdrawForm'])->name('transactions.withdraw.form');
+    Route::post('/transactions/withdraw', [TransactionController::class, 'withdraw'])->name('transactions.withdraw');
+    Route::get('/transactions/{id}/receipt', [TransactionController::class, 'receipt'])->name('transactions.receipt');
 });
