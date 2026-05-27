@@ -15,6 +15,7 @@ class News extends Model
     protected $fillable = [
         'title',
         'content',
+        'author_id',
     ];
 
     /**
@@ -22,9 +23,7 @@ class News extends Model
      *
      * @var list<string>
      */
-    protected $hidden = [
-        'author_id',
-    ];
+    protected $hidden = [];
 
     /**
      * Merge the News author to user table
@@ -33,5 +32,17 @@ class News extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id')->withDefault(['name' => '[Deleted]']);
+    }
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'timestamp' => 'datetime',
+        ];
     }
 }

@@ -10,23 +10,17 @@
 <body>
     <h1>News Post</h1>
 
-    <a href="{{ route('news.create') }}">Create New Post</a>
+    <a href="{{ route('news.index') }}">News Home</a>
 
-    <br>
-    <br>
-
-    @if ($posts->isEmpty())
-    <p>No News</p>
+    @if (!$news)
+    <p>News Has Been Deleted</p>
     @else
-    @foreach($posts as $post)
-    <h2>{{ $post->title }}</h2>
-    <span style="font-size: small; color:gray">{{ $post->author->name }}</span>
-    <span style="font-size: small; color:black">{{ $post->timestamp->format('d - m - Y') }}</span>
+    <h2>{{ $news->title }}</h2>
+    <span style="font-size: small; color:gray">{{ $news->author->name }}</span><br>
+    <span style="font-size: small; color:black">{{ $news->created_at->format('d-m-Y')}}</span><br>
     <br>
-    <p>{{ $post->content }}</p>
-    @endforeach
+    <p>{{ $news->content }}</p>
     @endif
-
 </body>
 
 </html>
