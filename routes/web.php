@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardlessTransactionController;
@@ -54,6 +55,15 @@ Route::middleware('auth.session')->group(function () {
 
     Route::get('/account-types', [AccountTypeController::class, 'index'])->name('account-types.index');
     Route::get('/account-types/{accountType}', [AccountTypeController::class, 'show'])->name('account-types.show');
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/transfer', [TransactionController::class, 'transferForm'])->name('transactions.transfer.form');
+    Route::post('/transactions/transfer', [TransactionController::class, 'transfer'])->name('transactions.transfer');
+    Route::get('/transactions/deposit', [TransactionController::class, 'depositForm'])->name('transactions.deposit.form');
+    Route::post('/transactions/deposit', [TransactionController::class, 'deposit'])->name('transactions.deposit');
+    Route::get('/transactions/withdraw', [TransactionController::class, 'withdrawForm'])->name('transactions.withdraw.form');
+    Route::post('/transactions/withdraw', [TransactionController::class, 'withdraw'])->name('transactions.withdraw');
+    Route::get('/transactions/{id}/receipt', [TransactionController::class, 'receipt'])->name('transactions.receipt');
+});
 });
 
 Route::resource('/news', NewsController::class)->only(['index', 'show']);
