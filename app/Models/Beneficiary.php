@@ -10,6 +10,7 @@ class Beneficiary extends Model
         'user_id',
         'recipient_name',
         'bank_name',
+        'account_number',
         'alias',
     ];
 }
