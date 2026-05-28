@@ -64,6 +64,5 @@ Route::middleware('auth.session')->group(function () {
     Route::post('/transactions/withdraw', [TransactionController::class, 'withdraw'])->name('transactions.withdraw');
     Route::get('/transactions/{id}/receipt', [TransactionController::class, 'receipt'])->name('transactions.receipt');
 });
-});
 
 Route::resource('/news', NewsController::class)->only(['index', 'show']);
