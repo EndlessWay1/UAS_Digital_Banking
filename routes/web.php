@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardlessTransactionController;
 use App\Http\Controllers\BeneficiaryController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AccountTypeController;
 
 Route::get('/', function () {
     return redirect('/user/login');
@@ -43,6 +45,15 @@ Route::middleware('auth.session')->group(function () {
     Route::post('/cardless/withdraw', [CardlessTransactionController::class, 'withdraw'])->name('cardless.withdraw');
 
     Route::get('/cardless/history', [CardlessTransactionController::class, 'history'])->name('cardless.history');
+
+    Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
+    Route::get('/accounts/create', [AccountController::class, 'create'])->name('accounts.create');
+    Route::post('/accounts', [AccountController::class, 'store'])->name('accounts.store');
+    Route::get('/accounts/{account}', [AccountController::class, 'show'])->name('accounts.show');
+    Route::get('/accounts/{account}/balance', [AccountController::class, 'balance'])->name('accounts.balance');
+
+    Route::get('/account-types', [AccountTypeController::class, 'index'])->name('account-types.index');
+    Route::get('/account-types/{accountType}', [AccountTypeController::class, 'show'])->name('account-types.show');
 });
 
 Route::resource('/news', NewsController::class)->only(['index', 'show']);
