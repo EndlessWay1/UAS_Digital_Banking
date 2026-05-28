@@ -2,38 +2,49 @@
 namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Models\TransactionReceipt;
-use App\Models\User;
+use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
+    private function getAccount(Request $request)
+    {
+        $account = Account::where('user_id', $request->session()->get('id'))->firstOrFail();
+
+        if ($account->status !== 'active') {
+            abort(403, 'Your account is not active.');
+        }
+
+        return $account;
+    }
+
     public function index(Request $request)
     {
-        $user = User::findOrFail($request->session()->get('id'));
-        $transactions = Transaction::where('sender_account_number', $user->account_number)
-            ->orWhere('receiver_account_number', $user->account_number)
+        $account = $this->getAccount($request);
+        $transactions = Transaction::where('sender_account_number', $account->account_number)
+            ->orWhere('receiver_account_number', $account->account_number)
             ->latest()
             ->get();
-        return view('transactions.index', compact('user', 'transactions'));
+        return view('transactions.index', compact('account', 'transactions'));
     }
 
     public function transferForm(Request $request)
     {
-        $user = User::findOrFail($request->session()->get('id'));
-        return view('transactions.transfer', compact('user'));
+        $account = $this->getAccount($request);
+        return view('transactions.transfer', compact('account'));
     }
 
     public function depositForm(Request $request)
     {
-        $user = User::findOrFail($request->session()->get('id'));
-        return view('transactions.deposit', compact('user'));
+        $account = $this->getAccount($request);
+        return view('transactions.deposit', compact('account'));
     }
 
     public function withdrawForm(Request $request)
     {
-        $user = User::findOrFail($request->session()->get('id'));
-        return view('transactions.withdraw', compact('user'));
+        $account = $this->getAccount($request);
+        return view('transactions.withdraw', compact('account'));
     }
 
     public function transfer(Request $request)
@@ -44,8 +55,8 @@ class TransactionController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $sender = User::findOrFail($request->session()->get('id'));
-        $receiver = User::where('account_number', $request->receiver_account_number)->first();
+        $sender = $this->getAccount($request);
+        $receiver = Account::where('account_number', $request->receiver_account_number)->first();
 
         if (!$receiver) {
             return back()->withErrors(['receiver_account_number' => 'Account number not found.']);
@@ -53,6 +64,10 @@ class TransactionController extends Controller
 
         if ($sender->account_number === $request->receiver_account_number) {
             return back()->withErrors(['receiver_account_number' => 'You cannot transfer to your own account.']);
+        }
+
+        if ($receiver->status !== 'active') {
+            return back()->withErrors(['receiver_account_number' => 'Receiver account is not active.']);
         }
 
         if ($sender->balance < $request->amount) {
@@ -89,14 +104,14 @@ class TransactionController extends Controller
             'amount' => 'required|numeric|min:1',
         ]);
 
-        $user = User::findOrFail($request->session()->get('id'));
+        $account = $this->getAccount($request);
 
-        DB::transaction(function () use ($user, $request) {
-            $user->balance += $request->amount;
-            $user->save();
+        DB::transaction(function () use ($account, $request) {
+            $account->balance += $request->amount;
+            $account->save();
 
             $transaction = Transaction::create([
-                'sender_account_number' => $user->account_number,
+                'sender_account_number' => $account->account_number,
                 'receiver_account_number' => null,
                 'amount' => $request->amount,
                 'type' => 'deposit',
@@ -119,18 +134,18 @@ class TransactionController extends Controller
             'amount' => 'required|numeric|min:1',
         ]);
 
-        $user = User::findOrFail($request->session()->get('id'));
+        $account = $this->getAccount($request);
 
-        if ($user->balance < $request->amount) {
+        if ($account->balance < $request->amount) {
             return back()->withErrors(['amount' => 'Insufficient balance.']);
         }
 
-        DB::transaction(function () use ($user, $request) {
-            $user->balance -= $request->amount;
-            $user->save();
+        DB::transaction(function () use ($account, $request) {
+            $account->balance -= $request->amount;
+            $account->save();
 
             $transaction = Transaction::create([
-                'sender_account_number' => $user->account_number,
+                'sender_account_number' => $account->account_number,
                 'receiver_account_number' => null,
                 'amount' => $request->amount,
                 'type' => 'withdraw',
