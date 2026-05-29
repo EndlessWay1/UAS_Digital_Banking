@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('beneficiaries', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('recipient_name');
+            $table->string('account_number');
+            $table->string('alias')->nullable();
             $table->timestamps();
         });
     }
