@@ -10,7 +10,8 @@
     <h1>Cardless Deposit</h1>
 
     <p>Welcome, {{ $user->name }}</p>
-    <p>Current Balance: <strong>Rp {{ number_format($balance, 0, ',', '.') }}</strong></p>
+    <p>Current Account: <strong>{{ $account->account_number }}</strong></p>
+    <p>Current Balance: <strong>Rp {{ number_format($account->balance, 0, ',', '.') }}</strong></p>
 
     <form action="{{ route('cardless.deposit') }}" method="POST">
         @csrf
