@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
@@ -40,31 +41,29 @@ class UsersController extends Controller
             'password' => [
                 'required'
             ],
-            'email' => ['required'],
+            'email' => 'required|email',
         ]);
 
         // session
-        $user = User::where('email', $validated['email'])->first();
-
-        // auth, needs password first
-        $checkHash = Hash::check($validated['password'], $user?->password);
-        if (!$checkHash || !$user) {
-            abort(403, 'Incorrect Password or Email');
+        if (Auth::attempt($validated, $request->boolean('remember'))) {
+            $user = Auth::user();
+            $request->session()->regenerate();
+            $request->session()->put('id', $user->id);
+            $request->session()->put('role', $user->role);
+            return redirect()->route('home')->with('success', 'Successfully Logged In');
         }
 
-        $request->session()->regenerate();
-        $request->session()->put('id', $user->id);
-        $request->session()->put('role', $user->role);
-
-        return redirect()->route('home')->with('success', 'Successfully Logged In');
+        return back()->withErrors(['email' => 'The provided credentials do not match our records.'])->onlyInput('email');
     }
 
     public function logout(Request $request)
     {
+        Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/user/login');
+        return redirect('/user/login')->with('success', 'You\'ve been successfully logged out');
     }
 
     /**
