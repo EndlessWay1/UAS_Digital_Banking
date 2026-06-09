@@ -187,7 +187,16 @@ class UsersController extends Controller
         );
 
 
-        return redirect()->route('home')->with('success', 'User Updated Successfully');
+        return redirect()->route('profile', $request)->with('success', 'User Updated Successfully');
+    }
+
+
+    /**
+     * Return form for deletion from storage.
+     */
+    public function remove()
+    {
+        return view('users.delete');
     }
 
     /**

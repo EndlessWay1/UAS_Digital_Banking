@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardlessTransactionController;
@@ -16,7 +17,6 @@ Route::get('/', function () {
 
 
 
-Route::resource('/news', NewsController::class)->only(['index', 'show']);
 
 
 Route::get('/user/signup', [UsersController::class, 'create'])->name('signup');
@@ -80,5 +80,4 @@ Route::middleware('auth.session')->group(function () {
     Route::resource('/pocket', SavingsPocketController::class);
 });
 
-Route::post('/deposit', [CardlessTransactionController::class, 'deposit']);
-Route::post('/deposit', [CardlessTransactionController::class, 'withdraw']);
+Route::resource('/news', NewsController::class)->only(['index', 'show']);
