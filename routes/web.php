@@ -9,6 +9,7 @@ use App\Http\Controllers\CardlessTransactionController;
 use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountTypeController;
+use App\Http\Controllers\CommentController;
 
 Route::get('/', function () {
     return redirect()->route('home');
@@ -16,16 +17,14 @@ Route::get('/', function () {
 
 
 
-
-
-Route::get('/user/signup', [UsersController::class, 'create'])->name('signup');
-Route::post('/user/signup', [UsersController::class, 'store'])->name('storeUser');
-Route::get('/user/login', [UsersController::class, 'login'])->name('login');
-Route::post('/user/login', [UsersController::class, 'storelogin'])->name('storelogin');
-Route::post('/user/logout', [UsersController::class, 'logout'])->name('logout');
+Route::get('user/signup', [UsersController::class, 'create'])->name('signup');
+Route::post('user/signup', [UsersController::class, 'store'])->name('storeUser');
+Route::get('user/login', [UsersController::class, 'login'])->name('login');
+Route::post('user/login', [UsersController::class, 'storelogin'])->name('storelogin');
+Route::post('user/logout', [UsersController::class, 'logout'])->name('logout');
 
 // Routes that needs Session Auth
-Route::middleware('auth.session')->group(function () {
+Route::middleware('auth')->group(function () {
 
 
     Route::get('/user/home', function () {
@@ -63,6 +62,8 @@ Route::middleware('auth.session')->group(function () {
     Route::get('/transactions/withdraw', [TransactionController::class, 'withdrawForm'])->name('transactions.withdraw.form');
     Route::post('/transactions/withdraw', [TransactionController::class, 'withdraw'])->name('transactions.withdraw');
     Route::get('/transactions/{id}/receipt', [TransactionController::class, 'receipt'])->name('transactions.receipt');
+
+    Route::post('/comments/create', [CommentController::class, 'store'])->name('create.comment');
 });
 
 Route::resource('/news', NewsController::class)->only(['index', 'show']);

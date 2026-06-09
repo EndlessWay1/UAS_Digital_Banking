@@ -32,15 +32,18 @@ class NewsController extends Controller
     public function store(Request $request)
     {
         //
-        $request->validate([
+        $valid = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string|max:65535'
         ], [
             'content.required' => 'Please write something in the content',
             'title.required' => 'Please write something in the title',
         ]);
-
-        auth()->user()->news()->create($request);
+        News::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'author_id' => auth()->id(),
+        ]);
 
         return redirect()->route('news.index')->with('success', 'Post created successfully');
     }
@@ -50,6 +53,7 @@ class NewsController extends Controller
      */
     public function show(News $news)
     {
+        $news->load('comments.user');
         return view('news.show', compact('news'));
     }
 

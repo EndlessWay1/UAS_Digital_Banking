@@ -117,8 +117,7 @@ class UsersController extends Controller
      */
     public function show(Request $request)
     {
-        // session
-        $user = User::query()->findOrFail($request->session()->get('id'));
+        $user = auth()->user();
 
         return view('users.profile', compact('user'));
     }
@@ -130,9 +129,7 @@ class UsersController extends Controller
     {
         // check if the author_id is the same as the session id
 
-        $user_id = $request->session()->get('id');
-        $user = User::query()->findOrFail($user_id);
-
+        $user = auth()->user();
 
         return view('users.edit', compact('user'));
     }
@@ -142,7 +139,8 @@ class UsersController extends Controller
      */
     public function update(Request $request)
     {
-        $user_id = $request->session()->get('id');
+
+        $user = auth()->user();
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -166,9 +164,6 @@ class UsersController extends Controller
                 'required'
             ]
         ]);
-
-        // session
-        $user = User::query()->findOrFail($user_id);
 
         // auth, needs password first
         $checkHash = Hash::check($request->current_password, $user->password);
@@ -203,7 +198,7 @@ class UsersController extends Controller
      */
     public function destroy(Request $request)
     {
-        $user_id = $request->session()->get('id');
+
 
         $validated = $request->validate([
             'current_password' => [
@@ -212,7 +207,7 @@ class UsersController extends Controller
         ]);
 
         // session
-        $user = User::query()->findOrFail($user_id);
+        $user = auth()->user();
 
         // auth, needs password first
         $checkHash = Hash::check($request->current_password, $user->password);
