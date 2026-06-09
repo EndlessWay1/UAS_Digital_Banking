@@ -11,7 +11,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountTypeController;
 
 Route::get('/', function () {
-    return redirect('/user/login');
+    return redirect()->route('home');
 });
 
 
