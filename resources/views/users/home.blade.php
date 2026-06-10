@@ -9,6 +9,7 @@
 
 <body>
     <h1>Home</h1>
+
     <div style="display: flex; flex-direction:column; margin:1rem">
         <h2>User Space</h2>
         <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
@@ -22,27 +23,58 @@
             </form>
         </div>
 
+        <h2>Accounts</h2>
+        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
+            <form action="{{ route('accounts.index') }}" method="get">
+                <button type="submit" style="background:#58C4DD;color:white">My Accounts</button>
+            </form>
+
+            <form action="{{ route('accounts.create') }}" method="get">
+                <button type="submit" style="background:#58C4DD;color:white">Create Account</button>
+            </form>
+
+            <form action="{{ route('account-types.index') }}" method="get">
+                <button type="submit" style="background:#58C4DD;color:white">Account Types</button>
+            </form>
+        </div>
+
         <h2>News/Features</h2>
         <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
             <form action="{{ route('news.index') }}" method="get">
                 <button type="submit" style="background:#58C4DD;color:white">News</button>
             </form>
-            <!-- TODO -->
+
             <button type="submit" style="background:#58C4DD;color:white">My News</button>
+
             <form action="{{ route('news.create') }}" method="get">
                 <button type="submit" style="background:#58C4DD;color:white">Create News</button>
             </form>
         </div>
+
         <h2>Cardless</h2>
         <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
             <form action="{{ route('cardless.withdraw.form') }}" method="get">
                 <button type="submit" style="background:#58C4DD;color:white">Withdraw</button>
             </form>
+
             <form action="{{ route('cardless.deposit.form') }}" method="get">
                 <button type="submit" style="background:#58C4DD;color:white">Deposits</button>
             </form>
+
             <form action="{{ route('cardless.history') }}" method="get">
                 <button type="submit" style="background:#58C4DD;color:white">Transactions History</button>
+            </form>
+        </div>
+        <h2>Investment</h2>
+        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
+            <form action="{{ route('investments.liquidate.form') }}" method="get">
+                <button type="submit" style="background:#58C4DD;color:white">Liquidate</button>
+            </form>
+            <form action="{{ route('investments.invest.form') }}" method="get">
+                <button type="submit" style="background:#58C4DD;color:white">Invest</button>
+            </form>
+            <form action="{{ route('investments.history') }}" method="get">
+                <button type="submit" style="background:#58C4DD;color:white">Investment History</button>
             </form>
         </div>
     </div>
