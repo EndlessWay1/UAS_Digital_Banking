@@ -1,6 +1,6 @@
 <x-layout>
     <x-slot:title>
-        Sign Up
+        Sign In
     </x-slot:title>
 
 
@@ -33,6 +33,12 @@
                                     <p class="text-error text-xs mt-0.5">{{ $message }}</p>
                                 @enderror
 
+                            </div>
+
+
+                            <div class="flex-row gap-0.5">
+                                <input type="checkbox" name="remember" id="remember" class="checkbox">
+                                <span class="text-base ml-1">remember me</span>
                             </div>
 
                             <div class="form-control mt-8">
