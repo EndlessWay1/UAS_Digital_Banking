@@ -7,12 +7,13 @@ use App\Models\AccountType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class AccountController extends Controller
 {
     public function index(Request $request)
     {
-        $userId = $request->session()->get('id');
+        $userId = $this->getLoggedInUserId($request);
 
         $accounts = Account::with('accountType')
             ->where('user_id', $userId)
@@ -31,12 +32,17 @@ class AccountController extends Controller
 
     public function store(Request $request)
     {
-        $userId = $request->session()->get('id');
+        $userId = $this->getLoggedInUserId($request);
 
         $validated = $request->validate([
             'account_type_id' => [
                 'required',
                 Rule::exists('account_types', 'id'),
+            ],
+            'initial_balance' => [
+                'required',
+                'numeric',
+                'min:0',
             ],
             'pin' => [
                 'required',
@@ -45,11 +51,29 @@ class AccountController extends Controller
             ],
         ]);
 
+        $accountType = AccountType::findOrFail($validated['account_type_id']);
+
+        $alreadyHasAccountType = Account::where('user_id', $userId)
+            ->where('account_type_id', $accountType->id)
+            ->exists();
+
+        if ($alreadyHasAccountType) {
+            throw ValidationException::withMessages([
+                'account_type_id' => 'You already have an account with this account type.',
+            ]);
+        }
+
+        if ((float) $validated['initial_balance'] < (float) $accountType->minimum_balance) {
+            throw ValidationException::withMessages([
+                'initial_balance' => 'Initial balance must be at least Rp ' . number_format($accountType->minimum_balance, 0, ',', '.') . ' for ' . $accountType->name . ' account.',
+            ]);
+        }
+
         $account = Account::create([
             'user_id' => $userId,
-            'account_type_id' => $validated['account_type_id'],
+            'account_type_id' => $accountType->id,
             'account_number' => $this->generateAccountNumber(),
-            'balance' => 0,
+            'balance' => $validated['initial_balance'],
             'status' => 'active',
             'pin' => Hash::make($validated['pin']),
         ]);
@@ -79,9 +103,20 @@ class AccountController extends Controller
 
     private function authorizeAccountOwner(Request $request, Account $account): void
     {
-        if ($account->user_id !== $request->session()->get('id')) {
+        if ($account->user_id !== $this->getLoggedInUserId($request)) {
             abort(403, 'Unauthorized account access.');
         }
+    }
+
+    private function getLoggedInUserId(Request $request): int
+    {
+        $userId = $request->session()->get('id');
+
+        if (!$userId) {
+            abort(401, 'Please login first.');
+        }
+
+        return (int) $userId;
     }
 
     private function generateAccountNumber(): string
