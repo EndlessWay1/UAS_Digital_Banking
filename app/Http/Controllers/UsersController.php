@@ -88,7 +88,8 @@ class UsersController extends Controller
                     ->mixedCase()
                     ->numbers()
                     ->symbols()
-                    ->uncompromised()
+                    ->uncompromised(),
+                'confirmed'
             ],
         ]);
 
@@ -102,9 +103,7 @@ class UsersController extends Controller
             ]
         );
 
-        // prevent session fixation
-        $request->session()->regenerate();
-
+        Auth::login($user);
         $request->session()->put('id', $user->id);
         $request->session()->put('role', $user->role);
 

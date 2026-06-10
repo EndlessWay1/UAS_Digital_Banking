@@ -1,38 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
+<x-layout>
+    <x-slot:title>
+        Sign Up
+    </x-slot:title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In</title>
-</head>
 
-<body>
-    <h1>Log In</h1>
-    <span style="font-size: medium; color:gray"><a href=" {{ route('signup') }}">Sign Up</a></span>
-    <br>
-    <br>
-    <form method="post" action="{{ route('storelogin') }}">
-        @csrf
+    <div class='hero min-h-[calc(100vh-16rem)]'>
+        <div class="hero-content flex-col gap-3">
+            <div class="card w-96 bg-base-100">
+                <div class="card-body">
 
-        <span style="font-size: medium;">Email: </span>
-        <input type="email" placeholder="email" id="email" name='email' required><br>
-        <span style="font-size: medium;">Password: </span>
-        <input type="password" placeholder="password" name="password" id="password" required><br>
+                    <h1 class="text-3xl font-bold text-center">Sign In Account</h1>
+                    <div class=' rounded-lg mt-2'>
+                        <form method="post" action="{{ route('storelogin') }}" class="flex flex-col gap-4">
+                            @csrf
 
-        <button type="submit">Login</button>
+                            <div>
+                                <span>Email: </span>
+                                <input class="input" type="email" placeholder="email" id="email" name='email'
+                                    required>
 
-    </form>
+                                @error('email')
+                                    <p class="text-error text-xs mt-0.5">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+                            <div>
+
+                                <span>Password: </span>
+                                <input class='input' type="password" placeholder="password" name="password"
+                                    id="password" required><br>
+                                @error('password')
+                                    <p class="text-error text-xs mt-0.5">{{ $message }}</p>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-control mt-8">
+                                <button class='btn btn-primary btn-sm w-full' type="submit">Sign In</button>
+                            </div>
+                            <p class="text-center text-sm">
+                                Don't have an account?
+                                <a href="{{ route('signup') }}" class="link link-primary">Sign Up</a>
+
+                            </p>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    @endif
-</body>
 
-</html>
+</x-layout>
