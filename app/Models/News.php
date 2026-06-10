@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Comment;
 use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
@@ -32,6 +33,11 @@ class News extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id')->withDefault(['name' => '[Deleted]']);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 
     /**
