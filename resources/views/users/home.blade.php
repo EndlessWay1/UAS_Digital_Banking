@@ -62,7 +62,7 @@
             </form>
 
             <form action="{{ route('cardless.history') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Transactions History</button>
+                <button type="submit" style="background:#58C4DD;color:white">Cardless Transactions History</button>
             </form>
         </div>
         <h2>Investment</h2>
