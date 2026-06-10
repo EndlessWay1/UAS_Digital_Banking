@@ -44,11 +44,10 @@
                             </div>
 
                             <div>
-                                <span style="font-size: small;">Confirm Password: </span>
+                                <span>Confirm Password: </span>
                                 <input class="input" type="password" placeholder="password"
                                     name="password_confirmation" required>
                             </div>
-
 
 
 
