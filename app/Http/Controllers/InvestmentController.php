@@ -25,13 +25,29 @@ class InvestmentController extends Controller
         return $account;
     }
 
+    private function getInvestmentBalance(int $userId): float
+    {
+        $totalInvested = Investment::where('user_id', $userId)
+            ->where('type', 'invest')
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        $totalLiquidated = Investment::where('user_id', $userId)
+            ->where('type', 'liquidate')
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        return (float) ($totalInvested - $totalLiquidated);
+    }
+
     public function showLiquidate(Request $request)
     {
         $userId  = $request->session()->get('id');
         $user = User::findOrFail($userId);
         $account= $this->getAccount($userId);
+        $investmentBalance = $this->getInvestmentBalance($userId);
 
-        return view('investments.liquidate', compact('user', 'account'));
+        return view('investments.liquidate', compact('user', 'account', 'investmentBalance'));
     }
 
     public function liquidate(Request $request)
@@ -44,6 +60,12 @@ class InvestmentController extends Controller
         $userId = $request->session()->get('id');
         $user = User::findOrFail($userId);
         $account= $this->getAccount($userId);
+
+        $investmentBalance = $this->getInvestmentBalance($userId);
+
+        if ($investmentBalance < $validated['amount']) {
+            return back()->withErrors(['amount' => 'Insufficient balance.']);
+        }
 
         if (!Hash::check($validated['pin'], $account->pin)) {
             return back()
@@ -75,7 +97,9 @@ class InvestmentController extends Controller
             ]);
         });
 
-        return view('investments.liquidate', compact('user', 'account'));
+        $investmentBalance = $this->getInvestmentBalance($userId);
+
+        return view('investments.liquidate', compact('user', 'account', 'investmentBalance'));
     }
 
     public function showInvest(Request $request)
@@ -83,8 +107,9 @@ class InvestmentController extends Controller
         $userId = $request->session()->get('id');
         $user = User::findOrFail($userId);
         $account= $this->getAccount($userId);
+        $investmentBalance = $this->getInvestmentBalance($userId);
 
-        return view('investments.invest', compact('user', 'account'));
+        return view('investments.invest', compact('user', 'account', 'investmentBalance'));
     }
 
     public function invest(Request $request)
@@ -112,11 +137,12 @@ class InvestmentController extends Controller
             // Update the real account balance
             $account->balance -= $validated['amount'];
             $account->save();
- 
+            $investAmount = $validated['amount'] + $validated['amount'] * 0.01;
+
             // Log the investment transaction
             Investment::create([
                 'user_id' => $userId,
-                'amount' => $validated['amount'],
+                'amount' => $investAmount,
                 'type' => 'invest',
                 'status' => 'completed',
                 'date' => now()->toDateString(),
@@ -132,7 +158,9 @@ class InvestmentController extends Controller
             ]);
         });
 
-        return view('investments.invest', compact('user', 'account'));
+        $investmentBalance = $this->getInvestmentBalance($userId);
+
+        return view('investments.invest', compact('user', 'account', 'investmentBalance'));
     }
 
     public function history(Request $request)
@@ -145,6 +173,8 @@ class InvestmentController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('investments.history', compact('user', 'account', 'transactions'));
+        $investmentBalance = $this->getInvestmentBalance($userId);
+
+        return view('investments.history', compact('user', 'account', 'transactions', 'investmentBalance'));
     }
 }

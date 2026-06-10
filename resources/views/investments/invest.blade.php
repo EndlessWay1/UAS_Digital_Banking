@@ -12,7 +12,9 @@
     <p>Welcome, {{ $user->name }}</p>
     <p>Current Account: <strong>{{ $account->account_number }}</strong></p>
     <p>Current Balance: <strong>Rp {{ number_format($account->balance, 0, ',', '.') }}</strong></p>
-    
+    <p>Current Investment Balance: <strong>Rp {{ number_format($investmentBalance, 0, ',', '.') }}</strong></p>
+    <p>Investment Opportunity: <strong>Get +10% everytime you invest</strong></p>
+
     <form action="{{ route('investments.invest') }}" method="POST">
         @csrf
         <label for="amount">Amount (Rp):</label>
