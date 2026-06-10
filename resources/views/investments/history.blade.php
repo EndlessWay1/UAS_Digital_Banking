@@ -10,6 +10,7 @@
 
     <p>Welcome, {{ $user->name }}</p>
     <p>Current Balance: <strong>Rp {{ number_format($account->balance, 0, ',', '.') }}</strong></p>
+    <p>Current Investment Balance: <strong>Rp {{ number_format($investmentBalance, 0, ',', '.') }}</strong></p>
 
     @if ($transactions->isEmpty())
         <p>No transactions yet.</p>
