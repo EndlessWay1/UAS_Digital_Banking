@@ -7,7 +7,7 @@ use App\Models\Beneficiary;
 
 class BeneficiaryController extends Controller
 {
-    // to display beneficiary list
+    //to display beneficiary list
 
     public function index (Request $request)
     {
@@ -18,7 +18,7 @@ class BeneficiaryController extends Controller
         return view ('beneficiaries.index', compact('beneficiaries'));
     }
 
-    // to show create form
+    //to show create form
 
     public function create()
     {
