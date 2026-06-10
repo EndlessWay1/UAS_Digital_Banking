@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardless Deposit</title>
+    <title>Liquidate Investment</title>
 </head>
 <body>
 
-    <h1>Cardless Deposit</h1>
+    <h1>Liquidate Investment</h1>
 
     <p>Welcome, {{ $user->name }}</p>
     <p>Current Account: <strong>{{ $account->account_number }}</strong></p>
     <p>Current Balance: <strong>Rp {{ number_format($account->balance, 0, ',', '.') }}</strong></p>
 
-    <form action="{{ route('cardless.deposit') }}" method="POST">
+    <form action="{{ route('investments.liquidate') }}" method="POST">
         @csrf
         <label for="amount">Amount (Rp):</label>
         <input type="number" id="amount" name="amount" min="1" required value="{{ old('amount') }}">
-        <button type="submit">Deposit</button>
+        <button type="submit">Liquidate</button>
 
         <label for="pin">PIN:</label>
         <input type="password" id="pin" name="pin"
@@ -28,8 +28,8 @@
     </form>
 
     <br>
-    <a href="{{ route('cardless.withdraw.form') }}">Go to Withdraw</a> |
-    <a href="{{ route('cardless.history') }}">Cardless Transaction History</a> |
+    <a href="{{ route('investments.invest.form') }}">Invest</a> |
+    <a href="{{ route('investments.history') }}">Investment History</a> |
     <a href="{{ route('home') }}">Back to Home</a>
 
 </body>

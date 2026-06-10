@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction History</title>
+    <title>Investment History</title>
 </head>
 <body>
-    <h1>Cardless Transaction History</h1>
+    <h1>Investment History</h1>
 
     <p>Welcome, {{ $user->name }}</p>
     <p>Current Balance: <strong>Rp {{ number_format($account->balance, 0, ',', '.') }}</strong></p>
@@ -37,8 +37,8 @@
     @endif
 
     <br>
-    <a href="{{ route('cardless.deposit.form') }}">Deposit</a> |
-    <a href="{{ route('cardless.withdraw.form') }}">Withdraw</a> |
+    <a href="{{ route('investments.invest.form') }}">Invest</a> |
+    <a href="{{ route('investments.liquidate.form') }}">Liquidate</a> |
     <a href="{{ route('home') }}">Back to Home</a>
 
 </body>
