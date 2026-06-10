@@ -7,6 +7,7 @@
     <h1>Account Types</h1>
 
     <p>
+        <a href="{{ route('home') }}">Back to Home</a>
         <a href="{{ route('accounts.index') }}">Back to Accounts</a>
     </p>
 
