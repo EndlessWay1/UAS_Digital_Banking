@@ -12,11 +12,12 @@
     <p>Welcome, {{ $user->name }}</p>
     <p>Current Account: <strong>{{ $account->account_number }}</strong></p>
     <p>Current Balance: <strong>Rp {{ number_format($account->balance, 0, ',', '.') }}</strong></p>
+    <p>Current Investment Balance: <strong>Rp {{ number_format($investmentBalance, 0, ',', '.') }}</strong></p>
 
     <form action="{{ route('investments.liquidate') }}" method="POST">
         @csrf
         <label for="amount">Amount (Rp):</label>
-        <input type="number" id="amount" name="amount" min="1" required value="{{ old('amount') }}">
+        <input type="number" id="amount" name="amount" min="1" max="{{ $investmentBalance }}" required value="{{ old('amount') }}">
         <button type="submit">Liquidate</button>
 
         <label for="pin">PIN:</label>
