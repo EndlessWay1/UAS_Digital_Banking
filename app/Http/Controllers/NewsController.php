@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\News;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NewsController extends Controller
 {
@@ -13,7 +14,7 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $posts = News::with('author')->get(['*']);
+        $posts = News::with('author')->latest()->take(10)->get(['*']);
         return view('news.index', compact('posts'));
     }
 
@@ -31,17 +32,18 @@ class NewsController extends Controller
     public function store(Request $request)
     {
         //
-        $request->validate([
+        $valid = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string'
+            'content' => 'required|string|max:65535'
+        ], [
+            'content.required' => 'Please write something in the content',
+            'title.required' => 'Please write something in the title',
         ]);
-        News::create(
-            [
-                'title' => $request->title,
-                'content' => $request->content,
-                'author_id' => $request->session()->get('id'),
-            ]
-        );
+        News::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'author_id' => auth()->id(),
+        ]);
 
         return redirect()->route('news.index')->with('success', 'Post created successfully');
     }
@@ -51,20 +53,18 @@ class NewsController extends Controller
      */
     public function show(News $news)
     {
+        $news->load('comments.user');
         return view('news.show', compact('news'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, News $news)
+    public function edit(News $news)
     {
         // check if the author_id is the same as the session id
 
-        $user_id = $request->session()->get('id');
-        if ($user_id != $news->author_id) {
-            abort(403, 'Unauthorized Access');
-        }
+        $this->authorize('update', $news);
 
         return view('news.edit', compact('news'));
     }
@@ -77,12 +77,17 @@ class NewsController extends Controller
 
         // check if the author_id is the same as the session id
 
-        $user_id = $request->session()->get('id');
-        if ($user_id != $news->author_id) {
-            abort(403, 'Unauthorized Access');
-        }
+        $this->authorize('update', $news);
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string|max:65535'
+        ], [
+            'content.required' => 'Please write something in the content',
+            'title.required' => 'Please write something in the title',
+        ]);
 
-        $news->update($request->only('title', 'content'));
+
+        $news->update($validated);
 
         return redirect()->route('news.show', $news)->with('Success', 'News Updated Successfully');
     }
@@ -90,14 +95,10 @@ class NewsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, News $news)
+    public function destroy(News $news)
     {
         // check if the author_id is the same as the session id
-
-        $user_id = $request->session()->get('id');
-        if ($user_id != $news->author_id) {
-            abort(403, 'Unauthorized Access');
-        }
+        $this->authorize('delete', $news);
 
         $news->delete();
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
@@ -40,31 +41,29 @@ class UsersController extends Controller
             'password' => [
                 'required'
             ],
-            'email' => ['required'],
+            'email' => 'required|email',
         ]);
 
         // session
-        $user = User::where('email', $validated['email'])->first();
-
-        // auth, needs password first
-        $checkHash = Hash::check($validated['password'], $user?->password);
-        if (!$checkHash || !$user) {
-            abort(403, 'Incorrect Password or Email');
+        if (Auth::attempt($validated, $request->boolean('remember'))) {
+            $user = Auth::user();
+            $request->session()->regenerate();
+            $request->session()->put('id', $user->id);
+            $request->session()->put('role', $user->role);
+            return redirect()->route('home')->with('success', 'Successfully Logged In');
         }
 
-        $request->session()->regenerate();
-        $request->session()->put('id', $user->id);
-        $request->session()->put('role', $user->role);
-
-        return redirect()->route('home')->with('success', 'Successfully Logged In');
+        return back()->withErrors(['email' => 'The provided credentials do not match our records.'])->onlyInput('email');
     }
 
     public function logout(Request $request)
     {
+        Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/user/login');
+        return redirect('/user/login')->with('success', 'You\'ve been successfully logged out');
     }
 
     /**
@@ -118,8 +117,7 @@ class UsersController extends Controller
      */
     public function show(Request $request)
     {
-        // session
-        $user = User::query()->findOrFail($request->session()->get('id'));
+        $user = auth()->user();
 
         return view('users.profile', compact('user'));
     }
@@ -131,9 +129,7 @@ class UsersController extends Controller
     {
         // check if the author_id is the same as the session id
 
-        $user_id = $request->session()->get('id');
-        $user = User::query()->findOrFail($user_id);
-
+        $user = auth()->user();
 
         return view('users.edit', compact('user'));
     }
@@ -143,7 +139,8 @@ class UsersController extends Controller
      */
     public function update(Request $request)
     {
-        $user_id = $request->session()->get('id');
+
+        $user = auth()->user();
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -167,9 +164,6 @@ class UsersController extends Controller
                 'required'
             ]
         ]);
-
-        // session
-        $user = User::query()->findOrFail($user_id);
 
         // auth, needs password first
         $checkHash = Hash::check($request->current_password, $user->password);
@@ -204,7 +198,7 @@ class UsersController extends Controller
      */
     public function destroy(Request $request)
     {
-        $user_id = $request->session()->get('id');
+
 
         $validated = $request->validate([
             'current_password' => [
@@ -213,7 +207,7 @@ class UsersController extends Controller
         ]);
 
         // session
-        $user = User::query()->findOrFail($user_id);
+        $user = auth()->user();
 
         // auth, needs password first
         $checkHash = Hash::check($request->current_password, $user->password);
