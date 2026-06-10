@@ -45,6 +45,18 @@
                 <button type="submit" style="background:#58C4DD;color:white">Transactions History</button>
             </form>
         </div>
+        <h2>Investment</h2>
+        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
+            <form action="{{ route('investments.liquidate.form') }}" method="get">
+                <button type="submit" style="background:#58C4DD;color:white">Liquidate</button>
+            </form>
+            <form action="{{ route('investments.invest.form') }}" method="get">
+                <button type="submit" style="background:#58C4DD;color:white">Invest</button>
+            </form>
+            <form action="{{ route('investments.history') }}" method="get">
+                <button type="submit" style="background:#58C4DD;color:white">Investment History</button>
+            </form>
+        </div>
     </div>
 
     <form action="{{ route('logout') }}" method="POST">

@@ -9,6 +9,7 @@ use App\Http\Controllers\CardlessTransactionController;
 use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountTypeController;
+use App\Http\Controllers\InvestmentController;
 
 Route::get('/', function () {
     return redirect('/user/login');
@@ -63,6 +64,14 @@ Route::middleware('auth.session')->group(function () {
     Route::get('/transactions/withdraw', [TransactionController::class, 'withdrawForm'])->name('transactions.withdraw.form');
     Route::post('/transactions/withdraw', [TransactionController::class, 'withdraw'])->name('transactions.withdraw');
     Route::get('/transactions/{id}/receipt', [TransactionController::class, 'receipt'])->name('transactions.receipt');
+
+    Route::get('/investments/invest', [InvestmentController::class, 'showInvest'])->name('investments.invest.form');
+    Route::post('/investments/invest', [InvestmentController::class, 'invest'])->name('investments.invest');
+
+    Route::get('/investments/liquidate', [InvestmentController::class, 'showLiquidate'])->name('investments.liquidate.form');
+    Route::post('/investments/liquidate', [InvestmentController::class, 'liquidate'])->name('investments.liquidate');
+
+    Route::get('/investments/history', [InvestmentController::class, 'history'])->name('investments.history');
 });
 
 Route::resource('/news', NewsController::class)->only(['index', 'show']);
