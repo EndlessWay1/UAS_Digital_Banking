@@ -48,21 +48,40 @@
                                 <input class="input" type="password" placeholder="password"
                                     name="password_confirmation" required>
                             </div>
+                            @auth
+                                @can('viewAny', auth()->user())
+                                    <div>
 
-
-
-                            <div class="form-control mt-8">
-                                <button class='btn btn-primary btn-sm w-full' type="submit">Sign Up</button>
-                            </div>
-                            <p class="text-center text-sm">
-                                Already have an account?
-                                <a href="{{ route('login') }}" class="link link-primary">Sign In</a>
-
-                            </p>
-
-
-                        </form>
+                                        <span>Role: </span>
+                                        <select id="role" class="input" name="role">
+                                            <option selected>Choose a role</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="user">User</option>
+                                            <option value="clerk">Clerk</option>
+                                        </select>
+                                        @error('role')
+                                            <p class="text-error text-xs mt-0.5">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @endcan
+                            @endauth
                     </div>
+
+
+
+
+
+                    <div class="form-control mt-8">
+                        <button class='btn btn-primary btn-sm w-full' type="submit">Sign Up</button>
+                    </div>
+                    <p class="text-center text-sm">
+                        Already have an account?
+                        <a href="{{ route('login') }}" class="link link-primary">Sign In</a>
+
+                    </p>
+
+
+                    </form>
                 </div>
             </div>
         </div>
