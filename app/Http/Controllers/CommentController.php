@@ -24,10 +24,8 @@ class CommentController extends Controller
             'news_id' => $validate['news'],
         ]);
 
-        return redirect()->route('home')
+        return redirect()->route('news.show', $validate['news'])
             ->with('success', 'Successfully added comment');
-
-        return redirect()->route('home')->with('success', 'successfully added comments');
     }
 
 

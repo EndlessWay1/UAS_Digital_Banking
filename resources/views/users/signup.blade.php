@@ -3,38 +3,88 @@
         Sign Up
     </x-slot:title>
 
-    <body>
-        <h1>Sign Up</h1>
-        <span class="font-medium hover:text-blue-400 text-blue-500"><a href=" {{ route('login') }}">Login</a></span>
-        <div class="">
 
-            <div class='max-w-2xl min-w-2xl mx-xl rounded-lg px-2, py-0.5 bg-blue-300'>
-                <form method="post" action="{{ route('storeUser') }}" class="flex gap-2">
-                    @csrf
+    <div class='hero min-h-[calc(100vh-16rem)]'>
+        <div class="hero-content flex-col gap-3">
+            <div class="card w-96 bg-base-100">
+                <div class="card-body">
 
-                    <span class='' style="font-size: medium;">Name: </span>
-                    <input type="text" placeholder="name" id="name" name='name' required autofocus><br>
+                    <h1 class="text-3xl font-bold text-center">Create Account</h1>
+                    <div class=' rounded-lg mt-2'>
+                        <form method="post" action="{{ route('storeUser') }}" class="flex flex-col gap-4">
+                            @csrf
+                            <div>
+                                <span>Name:</span>
+                                <input class='input @error('name') input-error @enderror' type="text"
+                                    placeholder="Name" id="name" name='name' required autofocus>
 
-                    <span style="font-size: medium;">Email: </span>
-                    <input type="email" placeholder="email" id="email" name='email' required><br>
+                                @error('name')
+                                    <p class="text-error text-xs mt-0.5">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                    <span style="font-size: medium;">Password: </span>
-                    <input type="password" placeholder="password" name="password" required><br>
+                            <div>
+                                <span>Email: </span>
+                                <input class="input" type="email" placeholder="email" id="email" name='email'
+                                    required>
 
-                    <button type="submit">Sign Up</button>
+                                @error('email')
+                                    <p class="text-error text-xs mt-0.5">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                </form>
+                            <div>
+                                <span>Password: </span>
+                                <input class="input @error('name') input-error @enderror" type="password"
+                                    placeholder="password" name="password" required>
+
+                                @error('password')
+                                    <p class="text-error text-xs mt-0.5">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <span>Confirm Password: </span>
+                                <input class="input" type="password" placeholder="password"
+                                    name="password_confirmation" required>
+                            </div>
+                            @auth
+                                @can('viewAny', auth()->user())
+                                    <div>
+
+                                        <span>Role: </span>
+                                        <select id="role" class="input" name="role">
+                                            <option selected>Choose a role</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="user">User</option>
+                                            <option value="clerk">Clerk</option>
+                                        </select>
+                                        @error('role')
+                                            <p class="text-error text-xs mt-0.5">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @endcan
+                            @endauth
+                    </div>
+
+
+
+
+
+                    <div class="form-control mt-8">
+                        <button class='btn btn-primary btn-sm w-full' type="submit">Sign Up</button>
+                    </div>
+                    <p class="text-center text-sm">
+                        Already have an account?
+                        <a href="{{ route('login') }}" class="link link-primary">Sign In</a>
+
+                    </p>
+
+
+                    </form>
+                </div>
             </div>
         </div>
+    </div>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-    </body>
 </x-layout>

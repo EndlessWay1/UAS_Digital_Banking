@@ -9,6 +9,7 @@ use App\Http\Controllers\CardlessTransactionController;
 use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountTypeController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\InvestmentController;
 use App\Http\Controllers\SavingsPocketController;
@@ -33,13 +34,13 @@ Route::middleware('auth')->group(function () {
         return (view('users.home'));
     })->name('home');
     Route::resource('/user', UsersController::class)->only(['show', 'edit', 'update', 'destroy']);
-    Route::get('/user/profile', [UsersController::class, 'show'])->name('profile');
+    Route::get('/user/profile/{user}', [UsersController::class, 'show'])->name('profile');
 
-    Route::get('/user/profile/edit', [UsersController::class, 'edit'])->name('profile.edit');
-    Route::put('/user/profile/edit', [UsersController::class, 'update'])->name('profile.update');
+    Route::get('/user/profile/{user}/edit', [UsersController::class, 'edit'])->name('profile.edit');
+    Route::put('/user/profile/{user}/edit', [UsersController::class, 'update'])->name('profile.update');
 
-    Route::get('/user/profile/remove', [UsersController::class, 'remove'])->name('profile.remove');
-    Route::delete('/user/profile/remove', [UsersController::class, 'destroy'])->name('profile.delete');
+    Route::get('/user/profile/{user}/remove', [UsersController::class, 'remove'])->name('profile.remove');
+    Route::delete('/user/profile/{user}/remove', [UsersController::class, 'destroy'])->name('profile.delete');
 
     Route::resource('/news', NewsController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
 
@@ -85,8 +86,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/investments/liquidate', [InvestmentController::class, 'liquidate'])->name('investments.liquidate');
 
     Route::get('/investments/history', [InvestmentController::class, 'history'])->name('investments.history');
-  
+
     Route::resource('/pocket', SavingsPocketController::class);
+});
+
+Route::middleware('auth.admin')->group(function () {
+    // must be admin to access
+    Route::get('/users', [AdminController::class, 'userIndex'])->name('users');
 });
 
 Route::resource('/news', NewsController::class)->only(['index', 'show']);
