@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="flex flex-row gap-4 justify-center mt-8">
-                    <a href="{{ route('profile.edit') }}" class='btn w-10vh'>Edit Profile</a>
+                    <a href="{{ route('profile.edit', $user, request()) }}" class='btn w-10vh'>Edit Profile</a>
 
                     <a href="{{ route('home') }} " class="btn w-10vh">Home</a>
                 </div>

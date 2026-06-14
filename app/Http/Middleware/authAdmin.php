@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckSession
+class authAdmin
 {
     /**
      * Handle an incoming request.
@@ -15,9 +15,9 @@ class CheckSession
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->session()->has('id')) {
-            return redirect('/user/login');
+        if (auth()->check() && auth()->user()->role) {
+            return $next($request);
         }
-        return $next($request);
+        return redirect('/');
     }
 }

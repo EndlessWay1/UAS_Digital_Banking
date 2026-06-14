@@ -9,10 +9,20 @@
             <h1 class="text-3xl font-bold text-center mt-4">Home</h1>
 
 
+            @can('viewAny', auth()->user())
+                <div class="rounded-lg bg-amber-50 py-4 px-5 flex flex-col gap-2">
+                    <h2 class="text-xl">Admin Space</h2>
+                    <div class="flex flex-row gap-3">
+                        <a href="{{ route('users') }}" class="btn">All User</a>
+                        <a href="{{ route('signup') }}" class="btn">Sign Up</a>
+                    </div>
+                </div>
+            @endcan
+
             <div class="rounded-lg bg-amber-50 py-4 px-5 flex flex-col gap-2">
                 <h2 class="text-xl">User Space</h2>
                 <div class="flex flex-row gap-3">
-                    <a href="{{ route('profile', request()) }}" class="btn">Profile</a>
+                    <a href="{{ route('profile', auth()->user(), request()) }}" class="btn">Profile</a>
                     <a href="{{ route('signup') }}" class="btn">Sign Up</a>
                 </div>
             </div>
