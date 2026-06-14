@@ -1,88 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
+<x-layout>
+    <x-slot:title>
+        Home Dashboard
+    </x-slot:title>
+    <div class="flex justify-center items-center">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Dashboard</title>
-</head>
+        <div class="rounded-lg p-4 flex flex-col bg-amber-100 w-3xl shadow gap-4">
 
-<body>
-    <h1>Home</h1>
+            <h1 class="text-3xl font-bold text-center mt-4">Home</h1>
 
-    <div style="display: flex; flex-direction:column; margin:1rem">
-        <h2>User Space</h2>
-        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
-            <form action="{{ route('profile', request()) }}" method="get">
-                @csrf
-                <button type="submit" style="background:#58C4DD;color:white">Profile</button>
-            </form>
 
-            <form action="{{ route('signup') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Sign Up</button>
-            </form>
-        </div>
+            @can('viewAny', auth()->user())
+                <div class="rounded-lg bg-amber-50 py-4 px-5 flex flex-col gap-2">
+                    <h2 class="text-xl">Admin Space</h2>
+                    <div class="flex flex-row gap-3">
+                        <a href="{{ route('users') }}" class="btn">All User</a>
+                        <a href="{{ route('signup') }}" class="btn">Sign Up</a>
+                    </div>
+                </div>
+            @endcan
 
-        <h2>Accounts</h2>
-        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
-            <form action="{{ route('accounts.index') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">My Accounts</button>
-            </form>
+            <div class="rounded-lg bg-amber-50 py-4 px-5 flex flex-col gap-2">
+                <h2 class="text-xl">User Space</h2>
+                <div class="flex flex-row gap-3">
+                    <a href="{{ route('profile', auth()->user(), request()) }}" class="btn">Profile</a>
+                    <a href="{{ route('signup') }}" class="btn">Sign Up</a>
+                </div>
+            </div>
 
-            <form action="{{ route('accounts.create') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Create Account</button>
-            </form>
+            <div class="rounded-lg bg-amber-50 py-4 px-5 flex flex-col gap-2">
+                <h2 class="text-xl">Accounts</h2>
+                <div class="flex flex-row gap-3">
+                    <a href="{{ route('accounts.index') }}" class="btn">My Accounts</a>
+                    <a href="{{ route('accounts.create') }}" class="btn">Create Account</a>
+                    <a href="{{ route('account-types.index') }}" class="btn">Account Types</a>
+                </div>
+            </div>
 
-            <form action="{{ route('account-types.index') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Account Types</button>
-            </form>
-        </div>
+            <div class="rounded-lg bg-amber-50 py-4 px-5 flex flex-col gap-2">
+                <h2 class="text-xl">News/Features</h2>
+                <div class="flex flex-row gap-3">
+                    <a href="{{ route('news.index') }}" class="btn">News</a>
+                    <a href="#" class="btn">My News</a>
+                    <a href="{{ route('news.create') }}" class="btn">Create News</a>
+                </div>
+            </div>
 
-        <h2>News/Features</h2>
-        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
-            <form action="{{ route('news.index') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">News</button>
-            </form>
+            <div class="rounded-lg bg-amber-50 py-4 px-5 flex flex-col gap-2">
+                <h2 class="text-xl">Cardless</h2>
+                <div class="flex flex-row gap-3">
+                    <a href="{{ route('cardless.withdraw.form') }}" class="btn">Withdraw</a>
+                    <a href="{{ route('cardless.deposit.form') }}" class="btn">Deposits</a>
+                    <a href="{{ route('cardless.history') }}" class="btn">History Record</a>
+                </div>
+            </div>
 
-            <button type="submit" style="background:#58C4DD;color:white">My News</button>
+            <div class="rounded-lg bg-amber-50 py-4 px-5 flex flex-col gap-2">
+                <h2 class="text-xl">Investment</h2>
+                <div class="flex flex-row gap-3">
+                    <a href="{{ route('investments.liquidate.form') }}" class="btn">Liquidate</a>
+                    <a href="{{ route('investments.invest.form') }}" class="btn">Invest</a>
+                    <a href="{{ route('investments.history') }}" class="btn">Investment History</a>
+                </div>
+            </div>
 
-            <form action="{{ route('news.create') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Create News</button>
-            </form>
-        </div>
-
-        <h2>Cardless</h2>
-        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
-            <form action="{{ route('cardless.withdraw.form') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Withdraw</button>
-            </form>
-
-            <form action="{{ route('cardless.deposit.form') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Deposits</button>
-            </form>
-
-            <form action="{{ route('cardless.history') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Cardless History</button>
-            </form>
-        </div>
-        <h2>Investment</h2>
-        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
-            <form action="{{ route('investments.liquidate.form') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Liquidate</button>
-            </form>
-            <form action="{{ route('investments.invest.form') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Invest</button>
-            </form>
-            <form action="{{ route('investments.history') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Investment History</button>
-            </form>
         </div>
     </div>
 
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit">Log Out</button>
-    </form>
-</body>
-
-</html>
+</x-layout>
