@@ -12,15 +12,11 @@ use Illuminate\Support\Facades\Hash;
 
 class CardlessTransactionController extends Controller
 {
-    private function getAccount(int $userId): Account
+    private function getAccount(int $userId): ?Account
     {
         $account = Account::where('user_id', $userId)
         ->where('account_type_id', 1)
-        ->firstOrFail();
- 
-        if ($account->status !== 'active') {
-            abort(403, 'Your account is not active.');
-        }
+        ->first();
  
         return $account;
     }
@@ -30,6 +26,10 @@ class CardlessTransactionController extends Controller
         $userId  = $request->session()->get('id');
         $user = User::findOrFail($userId);
         $account= $this->getAccount($userId);
+
+        if (!$account) {
+            return redirect()->route('home')->with('success', "Error: Haven't created savings account!");
+        }
 
         return view('cardless.deposit', compact('user', 'account'));
     }
@@ -83,6 +83,10 @@ class CardlessTransactionController extends Controller
         $userId = $request->session()->get('id');
         $user = User::findOrFail($userId);
         $account= $this->getAccount($userId);
+
+        if (!$account) {
+            return redirect()->route('home')->with('success', "Error: Haven't created savings account!");
+        }
 
         return view('cardless.withdraw', compact('user', 'account'));
     }
@@ -141,6 +145,10 @@ class CardlessTransactionController extends Controller
         $user = User::findOrFail($userId);
         $account = $this->getAccount($userId);
 
+        if (!$account) {
+            return redirect()->route('home')->with('success', "Error: Haven't created savings account!");
+        }
+        
         $transactions = Cardless::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
