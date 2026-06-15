@@ -95,4 +95,5 @@ Route::middleware('auth.admin')->group(function () {
     Route::get('/users', [AdminController::class, 'userIndex'])->name('users');
 });
 
+Route::get('/news/user/{user}', [NewsController::class, 'showAuthorNews'])->name('news.user.show');
 Route::resource('/news', NewsController::class)->only(['index', 'show']);
