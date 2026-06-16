@@ -53,33 +53,27 @@ class TransactionController extends Controller
             'receiver_account_number' => 'required',
             'amount' => 'required|numeric|min:1',
             'description' => 'nullable|string',
+            'tags' => 'nullable|array',
         ]);
-
         $sender = $this->getAccount($request);
         $receiver = Account::where('account_number', $request->receiver_account_number)->first();
-
         if (!$receiver) {
             return back()->withErrors(['receiver_account_number' => 'Account number not found.']);
         }
-
         if ($sender->account_number === $request->receiver_account_number) {
             return back()->withErrors(['receiver_account_number' => 'You cannot transfer to your own account.']);
         }
-
         if ($receiver->status !== 'active') {
             return back()->withErrors(['receiver_account_number' => 'Receiver account is not active.']);
         }
-
         if ($sender->balance < $request->amount) {
             return back()->withErrors(['amount' => 'Insufficient balance.']);
         }
-
         DB::transaction(function () use ($sender, $receiver, $request) {
             $sender->balance -= $request->amount;
             $receiver->balance += $request->amount;
             $sender->save();
             $receiver->save();
-
             $transaction = Transaction::create([
                 'sender_account_number' => $sender->account_number,
                 'receiver_account_number' => $receiver->account_number,
@@ -87,14 +81,13 @@ class TransactionController extends Controller
                 'type' => 'transfer',
                 'status' => 'success',
                 'description' => $request->description,
+                'tags' => $request->tags ?? [],
             ]);
-
             TransactionReceipt::create([
                 'transaction_id' => $transaction->id,
                 'receipt_number' => 'RCP-' . now()->format('Ymd') . '-' . str_pad($transaction->id, 4, '0', STR_PAD_LEFT),
             ]);
         });
-
         return redirect()->route('transactions.index')->with('success', 'Transfer successful!');
     }
 
@@ -102,14 +95,12 @@ class TransactionController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:1',
+            'tags' => 'nullable|array',
         ]);
-
         $account = $this->getAccount($request);
-
         DB::transaction(function () use ($account, $request) {
             $account->balance += $request->amount;
             $account->save();
-
             $transaction = Transaction::create([
                 'sender_account_number' => $account->account_number,
                 'receiver_account_number' => null,
@@ -117,14 +108,13 @@ class TransactionController extends Controller
                 'type' => 'deposit',
                 'status' => 'success',
                 'description' => 'Deposit',
+                'tags' => $request->tags ?? [],
             ]);
-
             TransactionReceipt::create([
                 'transaction_id' => $transaction->id,
                 'receipt_number' => 'RCP-' . now()->format('Ymd') . '-' . str_pad($transaction->id, 4, '0', STR_PAD_LEFT),
             ]);
         });
-
         return redirect()->route('transactions.index')->with('success', 'Deposit successful!');
     }
 
@@ -132,18 +122,15 @@ class TransactionController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:1',
+            'tags' => 'nullable|array',
         ]);
-
         $account = $this->getAccount($request);
-
         if ($account->balance < $request->amount) {
             return back()->withErrors(['amount' => 'Insufficient balance.']);
         }
-
         DB::transaction(function () use ($account, $request) {
             $account->balance -= $request->amount;
             $account->save();
-
             $transaction = Transaction::create([
                 'sender_account_number' => $account->account_number,
                 'receiver_account_number' => null,
@@ -151,14 +138,13 @@ class TransactionController extends Controller
                 'type' => 'withdraw',
                 'status' => 'success',
                 'description' => 'Withdrawal',
+                'tags' => $request->tags ?? [],
             ]);
-
             TransactionReceipt::create([
                 'transaction_id' => $transaction->id,
                 'receipt_number' => 'RCP-' . now()->format('Ymd') . '-' . str_pad($transaction->id, 4, '0', STR_PAD_LEFT),
             ]);
         });
-
         return redirect()->route('transactions.index')->with('success', 'Withdrawal successful!');
     }
 
