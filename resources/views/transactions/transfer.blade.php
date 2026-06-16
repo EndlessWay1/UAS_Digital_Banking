@@ -24,6 +24,13 @@
         <label for="description">Description (optional):</label>
         <input type="text" id="description" name="description" value="{{ old('description') }}">
         <br><br>
+        <label>Tags (optional):</label><br>
+        @foreach(['food', 'transport', 'bills', 'entertainment', 'savings', 'other'] as $tag)
+            <input type="checkbox" name="tags[]" value="{{ $tag }}"
+                {{ in_array($tag, old('tags', [])) ? 'checked' : '' }}>
+            <label>{{ $tag }}</label>
+        @endforeach
+        <br><br>
         <button type="submit">Transfer</button>
     </form>
     <br>
