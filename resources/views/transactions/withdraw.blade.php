@@ -18,6 +18,13 @@
         <label for="amount">Amount (Rp):</label>
         <input type="number" id="amount" name="amount" min="1" required value="{{ old('amount') }}">
         <br><br>
+        <label>Tags (optional):</label><br>
+        @foreach(['food', 'transport', 'bills', 'entertainment', 'savings', 'other'] as $tag)
+            <input type="checkbox" name="tags[]" value="{{ $tag }}"
+                {{ in_array($tag, old('tags', [])) ? 'checked' : '' }}>
+            <label>{{ $tag }}</label>
+        @endforeach
+        <br><br>
         <button type="submit">Withdraw</button>
     </form>
     <br>
