@@ -7,18 +7,29 @@
 </head>
 <body>
     <h1>Transaction History</h1>
-    <p>Welcome, {{ $user->name }}</p>
-
+    <p>Account: {{ $account->account_number }}</p>
     <a href="{{ route('transactions.transfer.form') }}">Transfer</a> |
     <a href="{{ route('transactions.deposit.form') }}">Deposit</a> |
     <a href="{{ route('transactions.withdraw.form') }}">Withdraw</a> |
     <a href="{{ route('home') }}">Back to Home</a>
-
     <br><br>
 
     @if(session('success'))
         <p style="color:green">{{ session('success') }}</p>
     @endif
+
+    <form method="GET" action="{{ route('transactions.index') }}">
+        <input type="text" name="search" placeholder="Search by description..." value="{{ request('search') }}">
+        <select name="type">
+            <option value="">All Types</option>
+            <option value="transfer" {{ request('type') === 'transfer' ? 'selected' : '' }}>Transfer</option>
+            <option value="deposit" {{ request('type') === 'deposit' ? 'selected' : '' }}>Deposit</option>
+            <option value="withdraw" {{ request('type') === 'withdraw' ? 'selected' : '' }}>Withdraw</option>
+        </select>
+        <button type="submit">Filter</button>
+        <a href="{{ route('transactions.index') }}">Reset</a>
+    </form>
+    <br>
 
     <table border="1" cellpadding="10">
         <thead>
@@ -29,6 +40,7 @@
                 <th>Sender</th>
                 <th>Receiver</th>
                 <th>Description</th>
+                <th>Tags</th>
                 <th>Status</th>
                 <th>Receipt</th>
             </tr>
@@ -42,6 +54,13 @@
                     <td>{{ $transaction->sender_account_number }}</td>
                     <td>{{ $transaction->receiver_account_number ?? '-' }}</td>
                     <td>{{ $transaction->description ?? '-' }}</td>
+                    <td>
+                        @if(!empty($transaction->tags))
+                            {{ implode(', ', $transaction->tags) }}
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td>{{ ucfirst($transaction->status) }}</td>
                     <td>
                         <a href="{{ route('transactions.receipt', $transaction->id) }}">View Receipt</a>
@@ -49,7 +68,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8">No transactions yet.</td>
+                    <td colspan="9">No transactions yet.</td>
                 </tr>
             @endforelse
         </tbody>
