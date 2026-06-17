@@ -13,8 +13,7 @@
             <p style="color:red">{{ $error }}</p>
         @endforeach
     @endif
-    <form action="{{ route('transactions.withdraw') }}" method="POST">
-        @csrf
+    <form action="{{ route('transactions.confirm.withdraw') }}" method="GET">
         <label for="amount">Amount (Rp):</label>
         <input type="number" id="amount" name="amount" min="1" required value="{{ old('amount') }}">
         <br><br>
@@ -25,7 +24,7 @@
             <label>{{ $tag }}</label>
         @endforeach
         <br><br>
-        <button type="submit">Withdraw</button>
+        <button type="submit">Continue</button>
     </form>
     <br>
     <a href="{{ route('transactions.index') }}">Back to Transaction History</a>
