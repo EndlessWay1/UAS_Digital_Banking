@@ -5,58 +5,86 @@ use App\Models\TransactionReceipt;
 use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Hash;
 class TransactionController extends Controller
 {
     private function getAccount(Request $request)
     {
         $account = Account::where('user_id', $request->session()->get('id'))->firstOrFail();
-
         if ($account->status !== 'active') {
             abort(403, 'Your account is not active.');
         }
-
         return $account;
     }
-
     public function index(Request $request)
     {
         $account = $this->getAccount($request);
-
         $query = Transaction::where('sender_account_number', $account->account_number)
             ->orWhere('receiver_account_number', $account->account_number);
-
         if ($request->search) {
             $query->where('description', 'like', '%' . $request->search . '%');
         }
-
         if ($request->type) {
             $query->where('type', $request->type);
         }
-
         $transactions = $query->latest()->get();
-
         return view('transactions.index', compact('account', 'transactions'));
     }
-
     public function transferForm(Request $request)
     {
         $account = $this->getAccount($request);
         return view('transactions.transfer', compact('account'));
     }
-
     public function depositForm(Request $request)
     {
         $account = $this->getAccount($request);
         return view('transactions.deposit', compact('account'));
     }
-
     public function withdrawForm(Request $request)
     {
         $account = $this->getAccount($request);
         return view('transactions.withdraw', compact('account'));
     }
-
+    public function confirmTransfer(Request $request)
+    {
+        $request->validate([
+            'receiver_account_number' => 'required',
+            'amount' => 'required|numeric|min:1',
+        ]);
+        return view('transactions.confirm', [
+            'type' => 'transfer',
+            'amount' => $request->amount,
+            'receiver_account_number' => $request->receiver_account_number,
+            'description' => $request->description,
+            'tags' => $request->tags ?? [],
+        ]);
+    }
+    public function confirmDeposit(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+        ]);
+        return view('transactions.confirm', [
+            'type' => 'deposit',
+            'amount' => $request->amount,
+            'tags' => $request->tags ?? [],
+            'description' => null,
+            'receiver_account_number' => null,
+        ]);
+    }
+    public function confirmWithdraw(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+        ]);
+        return view('transactions.confirm', [
+            'type' => 'withdraw',
+            'amount' => $request->amount,
+            'tags' => $request->tags ?? [],
+            'description' => null,
+            'receiver_account_number' => null,
+        ]);
+    }
     public function transfer(Request $request)
     {
         $request->validate([
@@ -64,8 +92,12 @@ class TransactionController extends Controller
             'amount' => 'required|numeric|min:1',
             'description' => 'nullable|string',
             'tags' => 'nullable|array',
+            'pin' => 'required',
         ]);
         $sender = $this->getAccount($request);
+        if (!Hash::check($request->pin, $sender->pin)) {
+            return back()->withErrors(['pin' => 'Incorrect PIN.']);
+        }
         $receiver = Account::where('account_number', $request->receiver_account_number)->first();
         if (!$receiver) {
             return back()->withErrors(['receiver_account_number' => 'Account number not found.']);
@@ -100,14 +132,17 @@ class TransactionController extends Controller
         });
         return redirect()->route('transactions.index')->with('success', 'Transfer successful!');
     }
-
     public function deposit(Request $request)
     {
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'tags' => 'nullable|array',
+            'pin' => 'required',
         ]);
         $account = $this->getAccount($request);
+        if (!Hash::check($request->pin, $account->pin)) {
+            return back()->withErrors(['pin' => 'Incorrect PIN.']);
+        }
         DB::transaction(function () use ($account, $request) {
             $account->balance += $request->amount;
             $account->save();
@@ -127,16 +162,19 @@ class TransactionController extends Controller
         });
         return redirect()->route('transactions.index')->with('success', 'Deposit successful!');
     }
-
     public function withdraw(Request $request)
     {
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'tags' => 'nullable|array',
+            'pin' => 'required',
         ]);
         $account = $this->getAccount($request);
         if ($account->balance < $request->amount) {
             return back()->withErrors(['amount' => 'Insufficient balance.']);
+        }
+        if (!Hash::check($request->pin, $account->pin)) {
+            return back()->withErrors(['pin' => 'Incorrect PIN.']);
         }
         DB::transaction(function () use ($account, $request) {
             $account->balance -= $request->amount;
@@ -157,7 +195,6 @@ class TransactionController extends Controller
         });
         return redirect()->route('transactions.index')->with('success', 'Withdrawal successful!');
     }
-
     public function receipt(Request $request, $id)
     {
         $transaction = Transaction::findOrFail($id);

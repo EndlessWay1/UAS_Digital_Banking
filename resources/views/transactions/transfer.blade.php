@@ -13,8 +13,7 @@
             <p style="color:red">{{ $error }}</p>
         @endforeach
     @endif
-    <form action="{{ route('transactions.transfer') }}" method="POST">
-        @csrf
+    <form action="{{ route('transactions.confirm.transfer') }}" method="GET">
         <label for="receiver_account_number">Receiver Account Number:</label>
         <input type="text" id="receiver_account_number" name="receiver_account_number" required value="{{ old('receiver_account_number') }}">
         <br><br>
@@ -31,7 +30,7 @@
             <label>{{ $tag }}</label>
         @endforeach
         <br><br>
-        <button type="submit">Transfer</button>
+        <button type="submit">Continue</button>
     </form>
     <br>
     <a href="{{ route('transactions.index') }}">Back to Transaction History</a>
