@@ -8,14 +8,50 @@
 <body>
     <h1>Transaction Receipt</h1>
 
-    <p><strong>Receipt Number:</strong> {{ $receipt->receipt_number }}</p>
-    <p><strong>Date:</strong> {{ $transaction->created_at->format('d M Y, H:i') }}</p>
-    <p><strong>Type:</strong> {{ ucfirst($transaction->type) }}</p>
-    <p><strong>Amount:</strong> Rp {{ number_format($transaction->amount, 0, ',', '.') }}</p>
-    <p><strong>Sender:</strong> {{ $transaction->sender_account_number }}</p>
-    <p><strong>Receiver:</strong> {{ $transaction->receiver_account_number ?? '-' }}</p>
-    <p><strong>Description:</strong> {{ $transaction->description ?? '-' }}</p>
-    <p><strong>Status:</strong> {{ ucfirst($transaction->status) }}</p>
+    <table border="1" cellpadding="10">
+        <tr>
+            <td>Receipt Number</td>
+            <td>{{ $receipt->receipt_number }}</td>
+        </tr>
+        <tr>
+            <td>Transaction Type</td>
+            <td>{{ ucfirst($transaction->type) }}</td>
+        </tr>
+        <tr>
+            <td>Amount</td>
+            <td>Rp {{ number_format($transaction->amount, 0, ',', '.') }}</td>
+        </tr>
+        <tr>
+            <td>From</td>
+            <td>{{ $transaction->sender_account_number }}</td>
+        </tr>
+        <tr>
+            <td>To</td>
+            <td>{{ $transaction->receiver_account_number ?? '-' }}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{ $transaction->description ?? '-' }}</td>
+        </tr>
+        <tr>
+            <td>Tags</td>
+            <td>
+                @if(!empty($transaction->tags))
+                    {{ implode(', ', $transaction->tags) }}
+                @else
+                    -
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>{{ ucfirst($transaction->status) }}</td>
+        </tr>
+        <tr>
+            <td>Date & Time</td>
+            <td>{{ $transaction->created_at->format('d M Y, H:i') }}</td>
+        </tr>
+    </table>
 
     <br>
     <a href="{{ route('transactions.index') }}">Back to Transaction History</a>
