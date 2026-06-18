@@ -62,7 +62,13 @@
         <br><br>
 
         <button type="submit">Confirm {{ ucfirst($type) }}</button>
-        <a href="{{ url()->previous() }}">Cancel</a>
+        @if($type === 'transfer')
+            <a href="{{ route('transactions.transfer.form') }}">Cancel</a>
+        @elseif($type === 'deposit')
+            <a href="{{ route('transactions.deposit.form') }}">Cancel</a>
+        @else
+            <a href="{{ route('transactions.withdraw.form') }}">Cancel</a>
+        @endif
     </form>
 </body>
 </html>

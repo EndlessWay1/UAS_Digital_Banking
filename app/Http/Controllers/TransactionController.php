@@ -19,15 +19,22 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         $account = $this->getAccount($request);
-        $query = Transaction::where('sender_account_number', $account->account_number)
+
+        $query = Transaction::where(function($q) use ($account) {
+            $q->where('sender_account_number', $account->account_number)
             ->orWhere('receiver_account_number', $account->account_number);
+        });
+
         if ($request->search) {
             $query->where('description', 'like', '%' . $request->search . '%');
         }
+
         if ($request->type) {
             $query->where('type', $request->type);
         }
+
         $transactions = $query->latest()->get();
+
         return view('transactions.index', compact('account', 'transactions'));
     }
     public function transferForm(Request $request)
