@@ -11,7 +11,7 @@
                 <div class="flex flex-col gap-3 bg-[#efefef] px-3 py-2 rounded-lg shadow-lg">
 
                     <div class="flex justify-between w-full">
-                        <h1 class="text-xl font-bold mt-1">{{ $user->name }}</h1>
+                        <a href="{{ route('profile', $user) }}" class="text-xl font-bold mt-1">{{ $user->name }}</a>
                         <span class="text-xs ext-base-content/60 mt-1">
                             {{ $user->created_at->format('d-m-Y') }}</span>
 
@@ -25,8 +25,9 @@
                         <span class="rounded-lg bg-base-200 px-2 text-sm border">{{ $user->role ?? 'user' }}</span>
                     </div>
                     <div class="flex flex-row gap-4 justify-center mt-1">
-                        <a href="{{ route('profile.edit', $user, request()) }}" class='btn w-10vh'>Edit User</a>
-                        <a href="{{ route('profile.remove', $user, request()) }}" class='btn w-10vh'>Delete User</a>
+                        <a href="{{ route('profile.edit', $user, request()) }}" class='btn min-w-5vh'>Edit User</a>
+                        <a href="{{ route('profile.remove', $user, request()) }}" class='btn min-w-5vh'>Delete User</a>
+                        <a href="{{ route('news.user.show', $user) }}" class="btn w-5vh">News Made</a>
                     </div>
 
                 </div>
