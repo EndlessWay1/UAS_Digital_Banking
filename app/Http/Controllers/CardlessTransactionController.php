@@ -16,11 +16,7 @@ class CardlessTransactionController extends Controller
     {
         $account = Account::where('user_id', $userId)
             ->where('account_type_id', 1)
-            ->firstOrFail();
-
-        if ($account->status !== 'active') {
-            abort(403, 'Your account is not active.');
-        }
+            ->first();
 
         return $account;
     }
