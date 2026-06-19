@@ -218,7 +218,7 @@ class UsersController extends Controller
             ]);
             $checkHash = Hash::check($request->password, $user->password);
             if (!$checkHash) {
-                return back()->withErrors('password', 'Incorrect Password!');
+                return back()->withErrors(['password' => 'Incorrect Password!']);
             }
             $user->update(
                 [
@@ -252,17 +252,17 @@ class UsersController extends Controller
 
         if (auth()->user()->role != 'admin') {
 
-            $request->validate([
-                'current_password' => [
+            $validated = $request->validate([
+                'password' => [
                     'required'
                 ]
             ]);
 
 
             // auth, needs password first
-            $checkHash = Hash::check($request->current_password, $user->password);
+            $checkHash = Hash::check($validated['password'], $user->password);
             if (!$checkHash) {
-                return back()->withErrors('password', 'Incorrect Password!');
+                return back()->withErrors(['password' => 'Incorrect Password!']);
             }
             $request->session()->invalidate();
             $request->session()->regenerateToken();
