@@ -12,15 +12,11 @@ use Illuminate\Support\Facades\Hash;
 
 class InvestmentController extends Controller
 {
-    private function getAccount(int $userId): Account
+    private function getAccount(int $userId): ?Account
     {
         $account = Account::where('user_id', $userId)
         ->where('account_type_id', 2)
-        ->firstOrFail();
- 
-        if ($account->status !== 'active') {
-            abort(403, 'Your account is not active.');
-        }
+        ->first();
  
         return $account;
     }
@@ -45,6 +41,11 @@ class InvestmentController extends Controller
         $userId  = $request->session()->get('id');
         $user = User::findOrFail($userId);
         $account= $this->getAccount($userId);
+
+        if (!$account) {
+            return redirect()->route('home')->with('success', "Error: Haven't created investment account!");
+        }
+        
         $investmentBalance = $this->getInvestmentBalance($userId);
 
         return view('investments.liquidate', compact('user', 'account', 'investmentBalance'));
@@ -107,6 +108,11 @@ class InvestmentController extends Controller
         $userId = $request->session()->get('id');
         $user = User::findOrFail($userId);
         $account= $this->getAccount($userId);
+
+        if (!$account) {
+            return redirect()->route('home')->with('success', "Error: Haven't created investment account!");
+        }
+
         $investmentBalance = $this->getInvestmentBalance($userId);
 
         return view('investments.invest', compact('user', 'account', 'investmentBalance'));
@@ -168,6 +174,10 @@ class InvestmentController extends Controller
         $userId = $request->session()->get('id');
         $user = User::findOrFail($userId);
         $account = $this->getAccount($userId);
+
+        if (!$account) {
+            return redirect()->route('home')->with('success', "Error: Haven't created investment account!");
+        }
 
         $transactions = Investment::where('user_id', $userId)
             ->orderBy('created_at', 'desc')

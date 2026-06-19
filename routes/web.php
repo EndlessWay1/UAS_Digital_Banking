@@ -66,17 +66,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/account-types/{accountType}', [AccountTypeController::class, 'show'])->name('account-types.show');
 
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
-
     Route::get('/transactions/transfer', [TransactionController::class, 'transferForm'])->name('transactions.transfer.form');
     Route::post('/transactions/transfer', [TransactionController::class, 'transfer'])->name('transactions.transfer');
-
     Route::get('/transactions/deposit', [TransactionController::class, 'depositForm'])->name('transactions.deposit.form');
     Route::post('/transactions/deposit', [TransactionController::class, 'deposit'])->name('transactions.deposit');
-
     Route::get('/transactions/withdraw', [TransactionController::class, 'withdrawForm'])->name('transactions.withdraw.form');
     Route::post('/transactions/withdraw', [TransactionController::class, 'withdraw'])->name('transactions.withdraw');
-
     Route::get('/transactions/{id}/receipt', [TransactionController::class, 'receipt'])->name('transactions.receipt');
+    Route::get('/transactions/confirm/transfer', [TransactionController::class, 'confirmTransfer'])->name('transactions.confirm.transfer');
+    Route::get('/transactions/confirm/deposit', [TransactionController::class, 'confirmDeposit'])->name('transactions.confirm.deposit');
+    Route::get('/transactions/confirm/withdraw', [TransactionController::class, 'confirmWithdraw'])->name('transactions.confirm.withdraw');
 
     Route::post('/comments/create', [CommentController::class, 'store'])->name('create.comment');
     Route::get('/investments/invest', [InvestmentController::class, 'showInvest'])->name('investments.invest.form');
