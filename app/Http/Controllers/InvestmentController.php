@@ -43,7 +43,7 @@ class InvestmentController extends Controller
         $account= $this->getAccount($userId);
 
         if (!$account) {
-            return redirect()->route('home')->with('success', "Error: Haven't created investment account!");
+            return redirect()->route('home')->with('error', "Error: Haven't created investment account!");
         }
         
         $investmentBalance = $this->getInvestmentBalance($userId);
@@ -110,7 +110,7 @@ class InvestmentController extends Controller
         $account= $this->getAccount($userId);
 
         if (!$account) {
-            return redirect()->route('home')->with('success', "Error: Haven't created investment account!");
+            return redirect()->route('home')->with('error', "Error: Haven't created investment account!");
         }
 
         $investmentBalance = $this->getInvestmentBalance($userId);
@@ -176,7 +176,7 @@ class InvestmentController extends Controller
         $account = $this->getAccount($userId);
 
         if (!$account) {
-            return redirect()->route('home')->with('success', "Error: Haven't created investment account!");
+            return redirect()->route('home')->with('error', "Error: Haven't created investment account!");
         }
 
         $transactions = Investment::where('user_id', $userId)
