@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,17 @@ class NewsController extends Controller
         $posts = News::with('author')->latest()->take(10)->get(['*']);
         return view('news.index', compact('posts'));
     }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function showAuthorNews(User $user)
+    {
+        $posts = $user->news()->with('author')->latest()->get(['*']);
+        return view('news.userShow', ['posts' => $posts, 'user' => $user]);
+    }
+
+
 
     /**
      * Show the form for creating a new resource.
