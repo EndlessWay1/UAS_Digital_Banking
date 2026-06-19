@@ -148,7 +148,7 @@ class CardlessTransactionController extends Controller
         if (!$account) {
             return redirect()->route('home')->with('error', "Error: Haven't created savings account!");
         }
-        
+
         $transactions = Cardless::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->get();

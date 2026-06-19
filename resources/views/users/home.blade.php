@@ -50,6 +50,8 @@
                 <a href="{{ route('beneficiaries.index') }}" class="btn">Show Beneficiaries</a>
                 <a href="{{ route('beneficiaries.create') }}" class="btn">Create Beneficiaries</a>
             </x-feature>
+
+
         </div>
     </div>
 
