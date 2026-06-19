@@ -15,9 +15,13 @@ class CardlessTransactionController extends Controller
     private function getAccount(int $userId): ?Account
     {
         $account = Account::where('user_id', $userId)
-        ->where('account_type_id', 1)
-        ->first();
- 
+            ->where('account_type_id', 1)
+            ->firstOrFail();
+
+        if ($account->status !== 'active') {
+            abort(403, 'Your account is not active.');
+        }
+
         return $account;
     }
 
@@ -25,7 +29,7 @@ class CardlessTransactionController extends Controller
     {
         $userId  = $request->session()->get('id');
         $user = User::findOrFail($userId);
-        $account= $this->getAccount($userId);
+        $account = $this->getAccount($userId);
 
         if (!$account) {
             return redirect()->route('home')->with('success', "Error: Haven't created savings account!");
@@ -43,7 +47,7 @@ class CardlessTransactionController extends Controller
 
         $userId = $request->session()->get('id');
         $user = User::findOrFail($userId);
-        $account= $this->getAccount($userId);
+        $account = $this->getAccount($userId);
 
         if (!Hash::check($validated['pin'], $account->pin)) {
             return back()
@@ -55,7 +59,7 @@ class CardlessTransactionController extends Controller
             // Update the real account balance
             $account->balance += $validated['amount'];
             $account->save();
- 
+
             // Log the cardless transaction
             Cardless::create([
                 'user_id' => $userId,
@@ -64,14 +68,14 @@ class CardlessTransactionController extends Controller
                 'status' => 'completed',
                 'date' => now()->toDateString(),
             ]);
-        
+
             $transaction = Transaction::create([
-                    'sender_account_number' => $account->account_number,
-                    'receiver_account_number' => null,
-                    'amount' => $validated['amount'],
-                    'type' => 'deposit',
-                    'status' => 'success',
-                    'description' => 'Cardless Deposit',
+                'sender_account_number' => $account->account_number,
+                'receiver_account_number' => null,
+                'amount' => $validated['amount'],
+                'type' => 'deposit',
+                'status' => 'success',
+                'description' => 'Cardless Deposit',
             ]);
         });
 
@@ -82,7 +86,7 @@ class CardlessTransactionController extends Controller
     {
         $userId = $request->session()->get('id');
         $user = User::findOrFail($userId);
-        $account= $this->getAccount($userId);
+        $account = $this->getAccount($userId);
 
         if (!$account) {
             return redirect()->route('home')->with('success', "Error: Haven't created savings account!");
@@ -100,7 +104,7 @@ class CardlessTransactionController extends Controller
 
         $userId = $request->session()->get('id');
         $user = User::findOrFail($userId);
-        $account= $this->getAccount($userId);
+        $account = $this->getAccount($userId);
 
         if ($account->balance < $validated['amount']) {
             return back()->withErrors(['amount' => 'Insufficient balance.']);
@@ -116,7 +120,7 @@ class CardlessTransactionController extends Controller
             // Update the real account balance
             $account->balance -= $validated['amount'];
             $account->save();
- 
+
             // Log the cardless transaction
             Cardless::create([
                 'user_id' => $userId,
