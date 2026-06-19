@@ -1555,6 +1555,14 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="toast toast-top toast-center" style="z-index: 999">
+            <div class="alert alert-error bg-red-400 text-gray-800">
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
+
 
     <main class="flex-1 container mx-auto px-4 py-8">
         {{ $slot }}
