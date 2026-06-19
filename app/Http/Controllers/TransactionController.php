@@ -58,6 +58,15 @@ class TransactionController extends Controller
             'receiver_account_number' => 'required',
             'amount' => 'required|numeric|min:1',
         ]);
+
+        $sender = $this->getAccount($request);
+
+        if ($sender->account_number === $request->receiver_account_number) {
+            return redirect()->route('transactions.transfer.form')
+                ->withErrors(['receiver_account_number' => 'You cannot transfer to your own account.'])
+                ->withInput();
+        }
+
         return view('transactions.confirm', [
             'type' => 'transfer',
             'amount' => $request->amount,
