@@ -32,7 +32,7 @@ class CardlessTransactionController extends Controller
         $account = $this->getAccount($userId);
 
         if (!$account) {
-            return redirect()->route('home')->with('success', "Error: Haven't created savings account!");
+            return redirect()->route('home')->with('error', "Error: Haven't created savings account!");
         }
 
         return view('cardless.deposit', compact('user', 'account'));
@@ -89,7 +89,7 @@ class CardlessTransactionController extends Controller
         $account = $this->getAccount($userId);
 
         if (!$account) {
-            return redirect()->route('home')->with('success', "Error: Haven't created savings account!");
+            return redirect()->route('home')->with('error', "Error: Haven't created savings account!");
         }
 
         return view('cardless.withdraw', compact('user', 'account'));
@@ -150,9 +150,9 @@ class CardlessTransactionController extends Controller
         $account = $this->getAccount($userId);
 
         if (!$account) {
-            return redirect()->route('home')->with('success', "Error: Haven't created savings account!");
+            return redirect()->route('home')->with('error', "Error: Haven't created savings account!");
         }
-        
+
         $transactions = Cardless::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
