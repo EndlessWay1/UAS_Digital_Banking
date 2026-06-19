@@ -46,6 +46,13 @@
                 <a href="{{ route('investments.history') }}" class="btn">Investment History</a>
             </x-feature>
 
+            <x-feature title="Transactions">
+                <a href="{{ route('transactions.index') }}" class="btn">Transaction History</a>
+                <a href="{{ route('transactions.transfer.form') }}" class="btn">Transfer</a>
+                <a href="{{ route('transactions.deposit.form') }}" class="btn">Deposit</a>
+                <a href="{{ route('transactions.withdraw.form') }}" class="btn">Withdraw</a>
+            </x-feature>
+
             <x-feature title="Beneficiaries">
                 <a href="{{ route('beneficiaries.index') }}" class="btn">Show Beneficiaries</a>
                 <a href="{{ route('beneficiaries.create') }}" class="btn">Create Beneficiaries</a>
