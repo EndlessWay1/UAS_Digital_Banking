@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<a href="{{ route('home') }}">
+    Home
+</a>
+
 <head>
     <meta charset="UTF-8">
     <title>Add Beneficiary</title>

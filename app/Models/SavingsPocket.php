@@ -9,8 +9,8 @@ class SavingsPocket extends Model
     protected $fillable = [
         'user_id',
         'purpose',
-        'target_balance',
-        'current_balance',
+        'target_amount',
+        'current_amount',
         'status'
     ];
 

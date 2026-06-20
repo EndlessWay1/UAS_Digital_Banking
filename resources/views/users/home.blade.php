@@ -57,9 +57,13 @@
                 <a href="{{ route('beneficiaries.index') }}" class="btn">Show Beneficiaries</a>
                 <a href="{{ route('beneficiaries.create') }}" class="btn">Create Beneficiaries</a>
             </x-feature>
+            
+            <x-feature title="Savings Pocket">
+                <a href="{{ route('pocket.index') }}" class="btn">Show Saving Pockets</a>
+                <a href="{{ route('pocket.create') }}" class="btn">Create A Pocket</a>
+            </x-feature>
 
 
         </div>
     </div>
-
 </x-layout>
