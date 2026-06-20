@@ -12,7 +12,7 @@
 
 <body>
     <h1>Add Beneficiary</h1>
-    <form action="{{ route('beneficiaries.store') }}" method="POST">\
+    <form action="{{ route('beneficiaries.store') }}" method="POST">
         @csrf
 
         <span>Recipient Name:</span>
@@ -23,7 +23,7 @@
         <input type="text" name="bank_name" required>
         <br><br>
 
-        <span>RAccount Number:</span>
+        <span>Account Number:</span>
         <input type="text" name="account_number" required>
         <br><br>
 
@@ -45,4 +45,5 @@
     @endif
 
 </body>
+
 </html>
