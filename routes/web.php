@@ -43,7 +43,7 @@ Route::middleware('auth.session')->group(function () {
 
     Route::resource('/news', NewsController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
 
-    Route::resource('/beneficiaries', BeneficiaryController::class)->only(['index', 'create', 'store']);
+    Route::resource('/beneficiaries', BeneficiaryController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 
     Route::get('/cardless/deposit', [CardlessTransactionController::class, 'showDeposit'])->name('cardless.deposit.form');
     Route::post('/cardless/deposit', [CardlessTransactionController::class, 'deposit'])->name('cardless.deposit');
@@ -78,6 +78,11 @@ Route::middleware('auth.session')->group(function () {
     Route::get('/transactions/{id}/receipt', [TransactionController::class, 'receipt'])->name('transactions.receipt');
 
     Route::resource('/pocket', SavingsPocketController::class);
+
+    Route::get('/pocket/{pocket}/deposit', [SavingsPocketController::class, 'depositForm'])
+        ->name('pocket.deposit.form');
+    Route::post('/pocket/{pocket}/deposit', [SavingsPocketController::class, 'deposit'])
+        ->name('pocket.deposit');
 });
 
 Route::resource('/news', NewsController::class)->only(['index', 'show']);

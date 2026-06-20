@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\SavingsPocket;
 
 class SavingsPocketController extends Controller
 {   
@@ -13,14 +14,37 @@ class SavingsPocketController extends Controller
             $request->session()->get('id')
         )->get();
 
-        return view('pocket.index', compact('pockets'));
+        return view('pockets.index', compact('pockets'));
     }
 
     //to create
     
     public function create()
     {
-        return view('pocket.create');
+        return view('pockets.create');
+    }
+
+    //to deposit money to the pocket
+    public function depositForm(SavingsPocket $pocket)
+    {
+        return view('pockets.deposit', compact('pocket'));
+    }
+
+    public function deposit(Request $request, SavingsPocket $pocket)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1'
+        ]);
+
+        $pocket->current_amount += $request->amount;
+
+        if ($pocket->current_amount >= $pocket->target_amount) {
+            $pocket->status = 'Completed';
+        }
+
+        $pocket->save();
+
+        return redirect()->route('pocket.index');
     }
 
     //to store new savings pocket
@@ -47,14 +71,20 @@ class SavingsPocketController extends Controller
 
     public function edit(SavingsPocket $pocket)
     {
-        return view('pocket.edit', compact('pocket'));
+        return view('pockets.edit', compact('pocket'));
     }
 
     //to update
 
     public function update(Request $request, SavingsPocket $pocket)
     {
+        $request->validate([
+            'purpose' => 'required',
+            'target_amount' => 'required|numeric|min:1',
+        ]);
+
         $pocket->update([
+            'purpose' => $request->purpose,
             'target_amount' => $request->target_amount,
         ]);
 
