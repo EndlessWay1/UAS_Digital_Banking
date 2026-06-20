@@ -48,4 +48,37 @@ class BeneficiaryController extends Controller
         ->route('beneficiaries.index')
         ->with('success', 'Beneficiary Added Successfully!');
     }
+
+    //to edit
+
+    public function edit(Beneficiary $beneficiary)
+    {
+        return view('beneficiaries.edit', compact('beneficiary'));
+    }
+
+    public function update(Request $request, Beneficiary $beneficiary)
+    {
+        $request->validate([
+            'recipient_name' => 'required',
+            'account_number' => 'required',
+            'bank_name' => 'required',
+        ]);
+
+        $beneficiary->update([
+            'recipient_name' => $request->recipient_name,
+            'account_number' => $request->account_number,
+            'bank_name' => $request->bank_name,
+            'alias' => $request->alias,
+        ]);
+
+        return redirect()->route('beneficiaries.index');
+    }
+
+    //to delete
+    public function destroy(Beneficiary $beneficiary)
+    {
+        $beneficiary->delete();
+
+        return redirect()->route('beneficiaries.index');
+    }
 }

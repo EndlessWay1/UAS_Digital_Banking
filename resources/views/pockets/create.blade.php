@@ -3,7 +3,13 @@
 
 <body>
 
+<a href="{{ route('home') }}">
+    Home
+</a>
+
 <h1>Create Saving Goal</h1>
+
+<hr>
 
 <form method="POST" action="{{ route('pocket.store') }}">
     @csrf

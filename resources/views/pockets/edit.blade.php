@@ -5,7 +5,7 @@
 
 <h1>Edit Saving Goal</h1>
 
-<form method="POST" acion="{{ route('pocket.update', $pocket) }}">
+<form method="POST" action="{{ route('pocket.update', $pocket) }}">
     @csrf
     @method('PUT')
 
