@@ -1,57 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+<x-layout>
+    <x-slot:title>
+        Home Dashboard
+    </x-slot:title>
+    <div class="flex justify-center items-center">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Dashboard</title>
-</head>
+        <div class="rounded-lg p-4 flex flex-col bg-base-100 w-3xl shadow-lg gap-4">
 
-<body>
-    <h1>Home</h1>
-    <div style="display: flex; flex-direction:column; margin:1rem">
-        <h2>User Space</h2>
-        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
-            <form action="{{ route('profile', request()) }}" method="get">
-                @csrf
-                <button type="submit" style="background:#58C4DD;color:white">Profile</button>
-            </form>
-
-            <form action="{{ route('signup') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Sign Up</button>
-            </form>
-        </div>
-
-        <h2>News/Features</h2>
-        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
-            <form action="{{ route('news.index') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">News</button>
-            </form>
-            <!-- TODO -->
-            <button type="submit" style="background:#58C4DD;color:white">My News</button>
-            <form action="{{ route('news.create') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Create News</button>
-            </form>
-        </div>
-        <h2>Cardless</h2>
-        <div style="display: flex;flex-direction:row; margin: 1rem 0.5rem">
-            <form action="{{ route('cardless.withdraw.form') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Withdraw</button>
-            </form>
-            <form action="{{ route('cardless.deposit.form') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Deposits</button>
-            </form>
-            <form action="{{ route('cardless.history') }}" method="get">
-                <button type="submit" style="background:#58C4DD;color:white">Transactions History</button>
-            </form>
-        </div>
-    </div>
-
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit">Log Out</button>
-    </form>
-</body>
+            <h1 class="text-3xl font-bold text-center mt-4">Home</h1>
 
 
             @can('viewAny', auth()->user())
@@ -102,7 +57,7 @@
                 <a href="{{ route('beneficiaries.index') }}" class="btn">Show Beneficiaries</a>
                 <a href="{{ route('beneficiaries.create') }}" class="btn">Create Beneficiaries</a>
             </x-feature>
-
+            
             <x-feature title="Savings Pocket">
                 <a href="{{ route('pocket.index') }}" class="btn">Show Saving Pockets</a>
                 <a href="{{ route('pocket.create') }}" class="btn">Create A Pocket</a>
@@ -111,5 +66,4 @@
 
         </div>
     </div>
-
 </x-layout>

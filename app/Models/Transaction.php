@@ -1,7 +1,6 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-
 class Transaction extends Model
 {
     protected $fillable = [
@@ -11,8 +10,11 @@ class Transaction extends Model
         'type',
         'status',
         'description',
+        'tags',
     ];
-
+    protected $casts = [
+        'tags' => 'array',
+    ];
     public function receipt()
     {
         return $this->hasOne(TransactionReceipt::class);
