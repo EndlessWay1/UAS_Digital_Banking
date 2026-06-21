@@ -30,17 +30,61 @@ class BeneficiaryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'recipient_name' => 'required|string|max:225',
-            'bank_name' => 'required|string|max:255',
-            'account_number' => 'required|string|max:255',
+            'account_number' => 'required|numeric',
             'alias' => 'nullable|string|max:255',
         ]);
 
+        //to find the recipient account
+        $account = Account::where(
+            'account_number',
+            $validated['account_number']
+        )->first();
+
+        if (!$account) {
+            return back()->withErrors([
+                'account_number' => 'Account number does not exist!'
+            ])->withInput();
+        }
+
+        //to get the current user's account
+        $currentUserAccount = Account::where(
+            'user_id',
+            $request->session()->get('id')
+        )->first();
+
+        //to validate that the recipient account is in the same bank
+        if ($currentUserAccount->account_type_id != $account->account_type_id) {
+                return back()->withErrors([
+                    'account_number' => 'Only same=bank beneficiaries are allowed!'
+                ])->withInput();
+            }
+
+        //to validate that the account number is not user's account
+        if ($account->user_id == $request->session()->get('id')) {
+            return back()->withErrors([
+                'account_number' => 'You cannot add your own account to beneficiaries!'
+            ])->withInput();
+        }
+
+        //to anticipate the duplication
+        if (Beneficiary::where(
+            'user_id',
+            $request->session()->get('id')
+        )->where(
+            'account_number',
+            $account->account_number
+        )->exists()) {
+            return back()->withErrors([
+                'account_number' => 'Beneficiary already exists!'
+            ]) ->withInput();
+        }
+        
+
         Beneficiary::create([
             'user_id' => $request->session()->get('id'),
-            'recipient_name' => $validated['recipient_name'],
-            'bank_name' => $validated['bank_name'],
-            'account_number' => $validated['account_number'],
+            'recipient_name' => $account->user->name,
+            'bank_name' => $account->accountType->name,
+            'account_number' => $account->account_number,
             'alias' => $validated['alias'],
         ]);
 

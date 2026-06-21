@@ -15,14 +15,6 @@
     <form action="{{ route('beneficiaries.store') }}" method="POST">
         @csrf
 
-        <span>Recipient Name:</span>
-        <input type="text" name="recipient_name" required>
-        <br><br>
-
-        <span>Bank Name:</span>
-        <input type="text" name="bank_name" required>
-        <br><br>
-
         <span>Account Number:</span>
         <input type="text" name="account_number" required>
         <br><br>
